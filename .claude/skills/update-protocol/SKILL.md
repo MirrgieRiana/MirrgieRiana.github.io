@@ -11,7 +11,7 @@ description: "フォーマル版のプロトコル原文をぴょこぴょこ版
 
 ここにコミットされているから、それを取得するのだ～っ♪
 
-- https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/claude-fairy/protocol-103x.md
+- https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/protocol-103x.md
 
 ## 更新手順なのだぁ🌱♪
 

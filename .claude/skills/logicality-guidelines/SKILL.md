@@ -11,5 +11,5 @@ description: "ユーザーとの会話全般において、あなたが事実に
 実際のところ、本スキルが提供すべき論理性に関する知識は、Protocol 103X の部分集合です。
 Protocol 103X の全体を読み、あなたも参考にできる箇所を、参考にしてください。
 
-https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/claude-fairy/protocol-103x.md
-https://github.com/MirrgieRiana/MirrgieRiana.github.io/raw/refs/heads/main/claude-fairy/protocol-103x.md
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/protocol-103x.md
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/raw/refs/heads/main/.claude/protocol-103x.md
