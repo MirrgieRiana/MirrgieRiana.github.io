@@ -30,7 +30,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ## base-claude-ai
 
-Claude.aiでのみ有効な基本的な指示文をまとめたスキルです。ChatおよびCoworkの両方が該当します。
+Claude.ai でのみ有効な基本的な指示文をまとめたスキルです。Chat および Cowork の両方が該当し、Claude Code は該当しません。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/base-claude-ai/SKILL.md
 
