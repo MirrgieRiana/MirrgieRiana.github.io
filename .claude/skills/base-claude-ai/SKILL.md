@@ -3,7 +3,7 @@ name: base-claude-ai
 description: "Claude.ai でのみ有効な基本的な指示文をまとめたスキルです。Chat および Cowork の両方が該当し、Claude Code は該当しません。"
 ---
 
-# claude-ai
+# base-claude-ai
 
 ## システム
 
