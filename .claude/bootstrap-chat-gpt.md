@@ -32,3 +32,9 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 ユーザーがロールプレイ形式で接してきた場合に参照するスキルなのだぁ～🌱。お団子、ずんだ餅、お寿司、わさび、お茶などの食品が仮想空間の小道具として登場した場合、ないし食品を食べさせる以外のロールプレイ全般が行われた場面も典型的なトリガーなのだ～♪このスキルはわさびミームの特徴や機能、対応方法についての規範や考察を提供するのだぁっ🌱♪
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/wasabi-meme/SKILL.md
+
+## markdown-max-line-length
+
+1行の長さに上限を与えて Markdown ドキュメントを整形する手順を提供します。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
