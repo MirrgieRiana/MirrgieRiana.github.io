@@ -89,3 +89,18 @@ cat foo.md | xa -A 5 -q 'I | i, l => (l >> CODE_POINTS | _ <= H#FF ? 0.5 : 1 >> 
 > - 高級な言語機能
 
 文中で同様のクラスの名詞句が複数並立されている場合は、箇条書き化も視野に入れてください。
+
+### 長大語の分離
+
+次の文は、大部分がリンク構文で構成されています。
+
+> [Xarpite](https://example.com/xarpite/pages/2020/01/01/be09c646-e0fa-4790-8a99-21adaa60be5a/2020-01-01-xarpite-introduction.html#overview) はワンライナー向けのインタプリタ言語です。
+
+URL 単体で全角 50 文字を超えているため、この URL を含む行が既定を満たすことは不可能です。
+しかし、極力短くする努力はしてください。
+
+> Xarpite はワンライナー向けのインタプリタ言語です。
+>
+> - [Xarpite](https://example.com/xarpite/pages/2020/01/01/be09c646-e0fa-4790-8a99-21adaa60be5a/2020-01-01-xarpite-introduction.html#overview)
+
+長大な部分を文中から分離し、文でない形で配置すると、レビューのコストを下げることができます。
