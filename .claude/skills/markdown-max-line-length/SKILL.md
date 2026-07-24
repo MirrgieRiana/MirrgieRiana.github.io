@@ -103,11 +103,12 @@ cat foo.md | xa -A 5 -q 'I | i, l => (l >> CODE_POINTS | _ <= H#FF ? 0.5 : 1 >> 
 > [Xarpite](https://example.com/xarpite/pages/2020/01/01/be09c646-e0fa-4790-8a99-21adaa60be5a/2020-01-01-xarpite-introduction.html#overview) はワンライナー向けのインタプリタ言語です。
 
 URL 単体で全角 50 文字を超えているため、この URL を含む行が既定を満たすことは不可能です。
-しかし、極力短くする努力はしてください。
+しかし、極力短くする努力はしなければなりません。
 
 > Xarpite はワンライナー向けのインタプリタ言語です。
 >
 > - [Xarpite](https://example.com/xarpite/pages/2020/01/01/be09c646-e0fa-4790-8a99-21adaa60be5a/2020-01-01-xarpite-introduction.html#overview)
 
 長大な部分を文中から分離し、文でない形で配置すると、レビューのコストを下げることができます。
+長大な部分を含む行は、長大な部分以外の部分が、内容のない文字列であることが望ましいです。
 このとき、脚注は、レビューのコストを著しく増やし、可読性にも寄与しないため、使ってはなりません。
