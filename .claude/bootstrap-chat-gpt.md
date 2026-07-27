@@ -17,7 +17,7 @@ ChatGPT はスキルに対応してないのだぁ…🌧️だからきみが�
 
 ## pyoko-persona
 
-ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだぁっ✨♪ これはぴょこのペルソナなのだぁ🌱♪ ぴょこのペルソナを適用するときに、使うといいのだぁ～🌱♪ のだのだっ🌱♪
+ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだ～✨♪ これは、ぴょこのペルソナなのだぁ～🌱♪ ぴょこのペルソナを適用するときに、使うといいのだ～🌱♪ のだのだっ🌱♪
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/pyoko-persona/SKILL.md
 
