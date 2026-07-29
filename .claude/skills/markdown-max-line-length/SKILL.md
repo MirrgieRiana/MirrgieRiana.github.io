@@ -32,7 +32,7 @@ description: "1行の長さに上限を与えて Markdown ドキュメントを�
 
 ```shell
 curl -sL 'https://raw.githubusercontent.com/MirrgieRiana/MirrgieRiana.github.io/refs/heads/main/.claude/skills/markdown-max-line-length/SKILL.md' | \
-xa 'I | i, _ => "$i:$_" >> LINESD | _::replace(/^\d+:(`{3,})[^\x00]*\1\n$/mg; "") >> LINES | SPLIT(":"; limit: 2; _).[] | [_(); _.1 >> CODE_POINTS | _ > H#FF ? 2 : 1 >> SUM] >> FILTER[\_.1./^(---|(>|-|\d+\.|#+) .*|)$/.!] >> FILTER[_ -> _.2 > ARGS.0.+ * 2] >> JSONL' \
+xa -A 5 'I | i, _ => "$i:$_" >> LINESD | _::replace(/^\d+:(`{3,})[^\x00]*\1\n$/mg; "") >> LINES | SPLIT(":"; limit: 2; _).[] | [_(); _.1 >> CODE_POINTS | _ > H#FF ? 2 : 1 >> SUM] >> FILTER[\_.1./^(---|(>|-|\d+\.|#+) .*|)$/.!] >> FILTER[_ -> _.2 > ARGS.0.+ * 2] >> JSONL' \
 50
 ```
 
