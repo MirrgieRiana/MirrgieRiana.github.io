@@ -26,6 +26,18 @@ description: "1行の長さに上限を与えて Markdown ドキュメントを�
 
 １２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０１２３４５６７８９０
 
+## チェッカー
+
+以下の Xarpite ワンライナーで、大まかなチェックができます。
+
+```shell
+curl -sL 'https://raw.githubusercontent.com/MirrgieRiana/MirrgieRiana.github.io/refs/heads/main/.claude/skills/markdown-max-line-length/SKILL.md' | \
+xa 'I | i, _ => "$i:$_" >> LINESD | _::replace(/^\d+:(`{3,})[^\x00]*\1\n$/mg; "") >> LINES | SPLIT(":"; limit: 2; _).[] | [_(); _.1 >> CODE_POINTS | _ > H#FF ? 2 : 1 >> SUM] >> FILTER[\_.1./^(---|(>|-|\d+\.|#+) .*|)$/.!] >> FILTER[_ -> _.2 > ARGS.0.+ * 2] >> JSONL' \
+50
+```
+
+これはすべてのルールを満たすような網羅的なチェックはできません。
+
 ## ルール
 
 ### 行長制限
@@ -57,7 +69,7 @@ cat foo.md | xa -A 5 -q 'I | i, l => (l >> CODE_POINTS | _ <= H#FF ? 0.5 : 1 >> 
 
 ---
 
-また、次のような、途中で改行することが不可能か不適切な部分がほとんどすべてを占める行もまた、例外です。
+また、次のような、途中の改行が不可能か不適切な部分がほとんどすべてを占める行もまた、例外です。
 
 - URL
 - 長大な単語
