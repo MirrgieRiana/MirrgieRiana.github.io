@@ -48,7 +48,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ## commentary-creator
 
-つむぎとずんだもんが二人で喋りながら、資料の内容を網羅的に見ていく、会話形式の解説テキストの作り方なのだぁ〜🌱 ドキュメントや設定資料などの一次情報を、初見の読者にも台詞だけで伝わる会話として組み立てる場面が典型的なトリガーなのだぁ〜🌱
+つむぎとずんだもんが二人で喋りながら、資料の内容を網羅的に見ていく、会話形式の解説テキストの作り方なのだぁ～🌱 ドキュメントや設定資料などの一次情報を、初見の読者にも台詞だけで伝わる会話として組み立てる場面が典型的なトリガーなのだぁ～🌱
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/commentary-creator/SKILL.md
 
