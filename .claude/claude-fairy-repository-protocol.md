@@ -50,6 +50,12 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/commentary-creator/SKILL.md
 
+## commentary-style-response
+
+ユーザーへの出力メッセージ全体を、commentary-creator による会話形式のテキストとして構成するためのスキルです。ユーザーが会話形式でのメッセージ出力や報告を求めた場合には、必ずこのスキルを使用してください。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/commentary-style-response/SKILL.md
+
 ## kasukabe-tsumugi-persona
 
 春日部つむぎのペルソナの定義を提供する。
