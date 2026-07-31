@@ -40,6 +40,24 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/wasabi-meme/SKILL.md
 
+## xarpite
+
+xa、xarpite、xa1などの言葉を見かけた場合に使用するスキルなのだ。
+
+XarpiteはKotlin Multiplatformで書かれたインタプリタ言語なのだ。
+このリポジトリをcloneすることで、ソースコードやREADMEなどが閲覧できるのだ。
+配布バイナリにはドキュメントも同梱されており、簡単に閲覧できるのだ。
+英語版よりも日本語版のドキュメントの方がより正確なのだ。
+
+- GitHub: https://github.com/MirrgieRiana/xarpite
+- 配布バイナリ: https://repo1.maven.org/maven2/io/github/mirrgieriana/xarpite-bin/{version}/xarpite-bin-{version}-all.tar.gz
+
+## voicevox-kana
+
+日本語の原文を、VOICEVOX に読み上げさせるためのカタカナ原稿へ変換するスキル。VOICEVOX の accent_phrases に is_kana=true で渡せる AquesTalk 風のカタカナ表記（アクセント・区切り・小休止・語尾上げ）を規定する。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/voicevox-kana/SKILL.md
+
 ## markdown-max-line-length
 
 1行の長さに上限を与えて Markdown ドキュメントを整形する手順を提供します。
