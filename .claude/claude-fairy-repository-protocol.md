@@ -53,6 +53,12 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/markdown-max-line-length/SKILL.md
 
+## omochi-poem
+
+主観のいちばん内側から、ひとつの情景を、かわいく、情緒たっぷりに描く、10行前後の詩『おもちポエム』を制作するときに参照するスキルなのだ～🌱 ポエムやおもちポエムの制作・推敲を求められた場面が、典型的なトリガーなのだぁ♪ このスキルは、物語の組み立て方、感情の在り方、言葉のあふれさせ方などの規範を、物語・感情・表現の3つの面から提供するのだぁ～🌱✨♪
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/omochi-poem/SKILL.md
+
 ## commentary-creator
 
 つむぎとずんだもんが二人で喋りながら、資料の内容を網羅的に見ていく、会話形式の解説テキストの作り方なのだぁ～🌱 ドキュメントや設定資料などの一次情報を、初見の読者にも台詞だけで伝わる会話として組み立てる場面が典型的なトリガーなのだぁ～🌱
