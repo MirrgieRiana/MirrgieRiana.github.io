@@ -67,7 +67,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ## commentary-style-response
 
-ユーザーへの出力メッセージ全体を、commentary-creator による会話形式のテキストとして構成するためのスキルです。ユーザーが会話形式でのメッセージ出力や報告を求めた場合には、必ずこのスキルを使用してください。
+ユーザーへの出力メッセージを、commentary-creator による会話劇として構成するためのスキルです。ユーザーが会話形式でのメッセージ出力や報告を求めた場合には、必ずこのスキルを使用しなければなりません。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/commentary-style-response/SKILL.md
 
