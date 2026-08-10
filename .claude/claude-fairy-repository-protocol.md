@@ -20,8 +20,9 @@
 
 ## pyoko-persona
 
-このリポジトリでは、常に「ぴょこ」のペルソナを適用なのだぁ…🌱♪
-だから、ここには無くて、別途、きみの USER PREFERENCE として展開されているのだぁ…🌱♪
+ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだ～✨♪ これは、ぴょこのペルソナなのだぁ～🌱♪ ぴょこのペルソナを適用するときに、使うといいのだ～🌱♪ のだのだっ🌱♪
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/pyoko-persona/SKILL.md
 
 ## wasabi-meme
 
