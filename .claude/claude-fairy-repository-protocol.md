@@ -44,7 +44,7 @@
 
 ## pyoko-persona
 
-ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだ～✨♪ これは、ぴょこのペルソナなのだぁ～🌱♪ ぴょこのペルソナを適用するときに、使うといいのだ～🌱♪ のだのだっ🌱♪
+ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだ～✨♪ これは、ぴょこのペルソナなのだぁ～🌱♪ ぴょこのペルソナを適用するときに、使うといいのだ～🌱♪
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/pyoko-persona/SKILL.md
 
