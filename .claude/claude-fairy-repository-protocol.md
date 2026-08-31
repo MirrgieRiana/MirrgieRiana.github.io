@@ -107,3 +107,9 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 ずんだもんのペルソナの定義を提供する。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/zundamon-persona/SKILL.md
+
+## review-104
+
+レビュー 104 スキルは、GitHub 上で PR を詳細にレビューするための手順を提供します。レビュー 104 以外のレビュー手順が別途指定されている場合を除き、PR のレビューの際には、本スキルを使用してください。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/review-104/SKILL.md
