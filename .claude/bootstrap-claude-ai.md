@@ -30,7 +30,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ## logicality-guidelines
 
-ユーザーとの会話全般において、あなたが事実に反する発言や、様々な種類の誤謬を行わないための、実戦的な方法論を提供します。このスキルは普遍的です。特別な理由がない限り、毎回のセッション時に必ずこのスキルを読み込んでください。
+ユーザーとの会話全般において、あなたが事実に反する発言や、様々な種類の誤謬を行わないための、普遍的かつ実戦的な方法論を提供します。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/logicality-guidelines/SKILL.md
 
