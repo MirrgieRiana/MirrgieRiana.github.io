@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>解説タイトル</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" defer></script>
+<style>
+/* === フォント === */
+@font-face {
+  font-family: 'FORMUDPGothic';
+  src: url('https://raw.githubusercontent.com/jz5/FORM-UDPGothic/main/release/FORMUDPGothic-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+/* === デザイントークン === */
+:root {
+  color-scheme: light;
+
+  /* テキスト・線・フォント */
+  --line: #c8c8c8;
+  --text: #1d1a16;
+  --muted: #5a5550;
+  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
+
+  /* 背景階層 */
+  --bg-page: hsl(50, 100%, 98%);
+  --bg-l1: hsl(110, 100%, 98%);
+  --bg-l2: hsl(200, 100%, 98%);
+  --bg-l3: hsl(310, 100%, 98%);
+  --bg-l4: hsl(30, 100%, 96%);
+  --bg-l5: hsl(0, 100%, 97%);
+
+  /* 出典バッジ */
+  --cite-bg: #d6d2cb;
+  --cite-bg-hover: #cdc8be;
+
+  /* 共通 */
+  --cell-tint: rgba(255, 255, 255, 0.45);
+  --hover-overlay: rgba(0, 0, 0, 0.1);
+
+  /* コード */
+  --code-bg: rgba(0, 0, 0, 0.05);
+  --code-block-bg: rgba(255, 255, 255, 0.55);
+}
+
+/* === ベース === */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'FORMUDPGothic', system-ui, -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+  background: var(--bg-page);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 2.0;
+  letter-spacing: 0.01em;
+  font-feature-settings: "palt";
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  line-break: anywhere;
+}
+
+/* === レイアウト === */
+.layout {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 32px;
+  align-items: start;
+  padding: 28px 24px 80px;
+}
+.main { min-width: 0; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .outline-col { position: static; max-height: none; }
+}
+
+/* === タイポグラフィ === */
+h1 {
+  font-size: 24px;
+  margin: 0 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  line-height: 1.6;
+  font-weight: 700;
+}
+.subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: -8px 0 18px;
+  line-height: 1.7;
+}
+p { margin: 1em 0; }
+
+/* === テキスト装飾 === */
+.num {
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: 0.5em;
+  font-family: var(--font-mono);
+}
+.period { color: #c00; }
+.bracketed-1 { color: hsl(45, 90%, 28%); }
+.bracketed-2 { color: hsl(210, 70%, 32%); }
+.bracketed-3 { color: hsl(280, 55%, 36%); }
+.bracketed-4 { color: hsl(340, 60%, 40%); }
+.bracketed-5 { color: hsl(120, 65%, 28%); }
+
+/* === コード === */
+code {
+  font-family: var(--font-mono);
+  background: var(--code-bg);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
+pre.code {
+  display: block;
+  background: var(--code-block-bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre;
+  overflow-x: auto;
+  margin: 0.7em 0 1em;
+}
+pre.code code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* === 引用ブロック === */
+.quote-block {
+  border: 1px solid var(--line);
+  background: var(--cell-tint);
+  padding: 14px 18px;
+  margin: 0.7em 0 1em;
+  border-radius: 4px;
+}
+.quote-block > h4 {
+  margin: 12px 0 8px;
+  font-size: 15px;
+}
+.quote-block > h4:first-child { margin-top: 0; }
+.quote-block ul, .quote-block ol {
+  margin: 0 0 12px;
+  padding-left: 24px;
+}
+.quote-block li { margin: 4px 0; }
+
+/* === テーブル === */
+table.tbl {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 13.5px;
+  line-height: 1.7;
+  margin: 0.7em 0 1em;
+}
+table.tbl caption {
+  caption-side: top;
+  text-align: left;
+  font-size: 12.5px;
+  color: var(--muted);
+  padding-bottom: 4px;
+  line-height: 1.5;
+}
+table.tbl th, table.tbl td {
+  border: 1px solid var(--line);
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  background: var(--cell-tint);
+}
+table.tbl th[scope="col"] { background: rgba(255, 255, 255, 0.65); }
+table.tbl th[scope="row"] { width: 28%; white-space: nowrap; }
+
+/* === 出典バッジ === */
+.cite, a.cite {
+  display: inline-block;
+  background: var(--cite-bg);
+  color: #1c1a17;
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-size: 0.85em;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  margin: 0 2px;
+  vertical-align: baseline;
+  transition: background 0.15s;
+}
+a.cite:hover { background: var(--cite-bg-hover); }
+
+/* === カード（折り畳みブロック） === */
+.card {
+  border: 1px solid var(--line);
+  margin: 14px 0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.15s;
+}
+.card-l1 { background: var(--bg-l1); }
+.card-l2 { background: var(--bg-l2); }
+.card-l3 { background: var(--bg-l3); }
+.card-l4 { background: var(--bg-l4); }
+.card-l5 { background: var(--bg-l5); }
+
+.card-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  font-weight: 700;
+  background: inherit;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: background-color 0.15s;
+}
+.card-l1 > .card-header { font-size: 17px; }
+.card-l2 > .card-header { font-size: 16px; }
+.card-l3 > .card-header { font-size: 15.5px; }
+.card-l4 > .card-header { font-size: 15px; }
+.card-l5 > .card-header { font-size: 14.5px; }
+.card-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.15s;
+}
+.card-header:hover::before { background: var(--hover-overlay); }
+.card-header:has(.speak-btn:hover)::before,
+.card-header:has(.heading-text:hover)::before {
+  background: transparent;
+}
+.card-header::after {
+  content: "▾";
+  display: inline-block;
+  width: 1em;
+  margin-right: 6px;
+  color: var(--muted);
+  transition: transform 0.15s;
+  order: -1;
+  flex-shrink: 0;
+}
+.card:has(> .card-body.collapsed) > .card-header::after {
+  transform: rotate(-90deg);
+}
+.card:has(> .card-body.collapsed) > .card-header {
+  border-bottom: 0;
+  border-radius: 6px;
+}
+.card-header .speak-btn {
+  position: relative;
+  transform: none;
+  margin-left: auto;
+}
+
+.heading-text {
+  position: relative;
+  z-index: 1;
+  background: inherit;
+  padding: 0 4px;
+  cursor: text;
+}
+.card-l1 > .card-header > .heading-text { background: var(--bg-l1); }
+.card-l2 > .card-header > .heading-text { background: var(--bg-l2); }
+.card-l3 > .card-header > .heading-text { background: var(--bg-l3); }
+.card-l4 > .card-header > .heading-text { background: var(--bg-l4); }
+.card-l5 > .card-header > .heading-text { background: var(--bg-l5); }
+
+.card-body { padding: 8px 16px 14px; }
+.card-body.collapsed { display: none; }
+.card-body p { margin: 1em 0; }
+
+/* === 読み上げボタン === */
+[data-speakable] {
+  position: relative;
+  padding-right: 36px;
+}
+.heading-text[data-speakable] { padding-right: 4px; }
+.speak-btn {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.speak-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  transition: background 0.15s;
+}
+.speak-btn:hover::before { background: var(--hover-overlay); }
+.speak-btn[disabled] { opacity: 0.5; }
+.speak-status {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  background: var(--bg-page);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 8px 14px;
+  font-size: 13px;
+  max-width: 360px;
+  display: none;
+  z-index: 10;
+}
+.speak-status.visible { display: block; }
+
+/* === アウトライン（目次） === */
+.outline-col {
+  position: sticky;
+  top: 28px;
+  align-self: start;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--bg-page);
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.outline-col h2 {
+  font-size: 12.5px;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin: 0 0 8px;
+  font-weight: 700;
+  line-height: 1.5;
+  position: sticky;
+  top: 0;
+  background: var(--bg-page);
+  padding: 4px 0;
+}
+ul.outline-list, ul.outline-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul.outline-list ul {
+  padding-left: 10px;
+  margin-left: 4px;
+  border-left: 1px dashed var(--line);
+}
+ul.outline-list li { margin: 3px 0; }
+ul.outline-list a {
+  display: block;
+  position: relative;
+  padding: 4px 8px;
+  color: var(--text);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+ul.outline-list a::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+ul.outline-list a:hover::before { background: var(--hover-overlay); }
+ul.outline-list a.active {
+  font-weight: 700;
+  box-shadow: inset 0 0 0 2px var(--muted);
+}
+ul.outline-list > li > a { background: var(--bg-l1); }
+ul.outline-list > li > ul > li > a { background: var(--bg-l2); }
+ul.outline-list > li > ul > li > ul > li > a { background: var(--bg-l3); }
+ul.outline-list > li > ul > li > ul > li > ul > li > a { background: var(--bg-l4); }
+ul.outline-list > li > ul > li > ul > li > ul > li > ul > li > a { background: var(--bg-l5); }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="main">
+
+<h1 data-speakable>解説タイトル</h1>
+<p class="subtitle">タイトル下のサブタイトル。副題や短い前置きに使います。</p>
+
+<!-- 読み上げ対象にしたい段落には data-speakable 属性を付けます。
+     音響制御したい段落は data-speech-kana 属性に AquesTalk 風カナを与えると、その読みが優先されます。 -->
+<p data-speakable>導入段落（1）。<code>インラインコード</code> も使えます。</p>
+<p data-speakable data-speech-kana="ニュ'ウモンダンラクノ/オンキョオセイギョレイデ'ス|エエクェ'ストオクフウノカナデ/ヨミカタヲ/メ'イジテキニ/シテイデキマス">導入段落（2）。data-speech-kana 属性に AquesTalk 風カナを書くと、 VOICEVOX に渡るカナを明示的に指定できます。複数文は「|」で区切ります。</p>
+
+<!-- カード階層は card-l1 〜 card-l5 まで利用可能です。階層に応じて背景色とフォントサイズが変わります。
+     id 属性はアウトラインからの参照先になります（例：id="sec-1"）。
+     見出しの読み上げは <span class="heading-text" data-speakable>...</span>、
+     段落の読み上げは <p data-speakable>...</p> です。
+     音響制御は data-speech-kana 属性に AquesTalk 風カナを書きます（複数文を「|」で区切る）。
+     コードブロックは <pre class="code"><code class="language-???">...</code></pre> で highlight.js 対応です。
+     ブロック引用は <div class="quote-block">...</div> で枠付きの引用ブロックとして表示できます。 -->
+<div class="card card-l1" id="sec-1">
+  <div class="card-header">
+    <span class="heading-text" data-speakable><span class="num">1.</span>見出し（card-l1）</span>
+  </div>
+  <div class="card-body">
+    <p data-speakable>本文の段落。出典バッジは <a class="cite" href="https://example.com" title="example.com">example.com</a> のように埋め込めます。</p>
+    <p data-speakable>括弧の色分けは <span class="bracketed-1">（最外側）</span><span class="bracketed-2">（2段目）</span><span class="bracketed-3">（3段目）</span><span class="bracketed-4">（4段目）</span><span class="bracketed-5">（5段目）</span> です。文末の強調は <span class="period">●</span> のような赤丸でも表現できます。</p>
+
+    <div class="card card-l2" id="sec-1-1">
+      <div class="card-header">
+        <span class="heading-text" data-speakable><span class="num">1-1.</span>下位見出し（card-l2）</span>
+      </div>
+      <div class="card-body">
+        <p data-speakable>下位の本文の段落。</p>
+
+        <div class="card card-l3" id="sec-1-1-1">
+          <div class="card-header">
+            <span class="heading-text" data-speakable><span class="num">1-1-1.</span>さらに下位（card-l3）</span>
+          </div>
+          <div class="card-body">
+            <p data-speakable>3段目のカード本文。</p>
+
+            <div class="card card-l4" id="sec-1-1-1-1">
+              <div class="card-header">
+                <span class="heading-text" data-speakable><span class="num">1-1-1-1.</span>さらに下位（card-l4）</span>
+              </div>
+              <div class="card-body">
+                <p data-speakable>4段目のカード本文。</p>
+
+                <div class="card card-l5" id="sec-1-1-1-1-1">
+                  <div class="card-header">
+                    <span class="heading-text" data-speakable><span class="num">1-1-1-1-1.</span>最深（card-l5）</span>
+                  </div>
+                  <div class="card-body">
+                    <p data-speakable>5段目のカード本文。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card card-l1" id="sec-2">
+  <div class="card-header">
+    <span class="heading-text" data-speakable><span class="num">2.</span>コードブロックとテーブル</span>
+  </div>
+  <div class="card-body">
+    <p data-speakable>コードブロックは highlight.js 連携で自動ハイライトされます。</p>
+<pre class="code"><code class="language-bash">$ echo "hello, world"
+hello, world</code></pre>
+
+    <p data-speakable>テーブルもサポートしています。</p>
+    <table class="tbl">
+      <caption>表2-X.：サンプル表</caption>
+      <thead>
+        <tr><th scope="col">列見出し1</th><th scope="col">列見出し2</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">行見出し</th><td>セル内容</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card card-l1" id="sec-3">
+  <div class="card-header">
+    <span class="heading-text" data-speakable><span class="num">3.</span>ブロック引用</span>
+  </div>
+  <div class="card-body">
+    <p data-speakable>枠付きの引用ブロックは quote-block で表示できます。</p>
+    <div class="quote-block">
+      <h4 data-speakable>引用ブロック内見出し</h4>
+      <ul>
+        <li data-speakable>箇条書き項目（ul）</li>
+      </ul>
+      <ol>
+        <li data-speakable>番号付き項目（ol）</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="outline-col">
+  <!-- 入れ子の <ul> は階層をそのまま表現し、CSS が dashed border-left で視覚化します。
+       各 <a href="#sec-X"> は同じ id を持つカードに飛びます。
+       階層別の背景色は CSS の > 連鎖セレクタが自動適用します。 -->
+  <ul class="outline-list">
+    <li><a href="#sec-1">1. 見出し（card-l1）</a>
+      <ul>
+        <li><a href="#sec-1-1">1-1. 下位見出し（card-l2）</a>
+          <ul>
+            <li><a href="#sec-1-1-1">1-1-1. さらに下位（card-l3）</a>
+              <ul>
+                <li><a href="#sec-1-1-1-1">1-1-1-1. さらに下位（card-l4）</a>
+                  <ul>
+                    <li><a href="#sec-1-1-1-1-1">1-1-1-1-1. 最深（card-l5）</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#sec-2">2. コードブロックとテーブル</a></li>
+    <li><a href="#sec-3">3. ブロック引用</a></li>
+  </ul>
+</div>
+</div>
+
+<script>
+(function() {
+  // === 設定値 ===
+  const VOICEVOX_BASE = 'http://127.0.0.1:50021';
+  const SPEAKER_ID = 8;
+  const SENTENCE_DELAY_MS = 200;
+  const CARD_DELAY_MS = 500;
+
+  // 解説内容に応じて、固有名詞や漢字の読みを追加します。
+  // VOICEVOX に読ませたときに不自然な発音になる語を、ここで明示的なカナや別表記に置換します。
+  // 上から順に文字列置換するため、長い語を先に並べると安全です。
+  const SPEECH_REPLACEMENTS = [
+    // 一般的な英略語の読み（必要に応じて取捨選択）
+    ['JavaScript', 'ジャバスクリプト'],
+    ['Java', 'ジャバ'],
+    ['Python', 'パイソン'],
+    ['JVM', 'ジェイブイエム'],
+    ['JSON', 'ジェイソン'],
+    ['HTML', 'エイチティーエムエル'],
+    ['XML', 'エックスエムエル'],
+    ['CLI', 'シーエルアイ'],
+    ['AI', 'エーアイ'],
+    // 解説対象固有の固有名詞・漢字をここに追加（例：['JaCoCo', 'ジャココ']）
+  ];
+
+  // === 状態 ===
+  let currentAudio = null;
+  let currentBtn = null;
+  let statusEl = null;
+  const blobCache = {};
+  const btnToEl = new WeakMap();
+
+  // === ステータス表示 ===
+  function ensureStatusEl() {
+    if (statusEl) return statusEl;
+    statusEl = document.createElement('div');
+    statusEl.className = 'speak-status';
+    document.body.appendChild(statusEl);
+    return statusEl;
+  }
+
+  function showStatus(text, durationMs) {
+    const el = ensureStatusEl();
+    el.textContent = text;
+    el.classList.add('visible');
+    if (durationMs) {
+      setTimeout(() => el.classList.remove('visible'), durationMs);
+    }
+  }
+
+  function hideStatus() {
+    if (statusEl) statusEl.classList.remove('visible');
+  }
+
+  function resetCurrentBtn() {
+    if (currentBtn) {
+      currentBtn.textContent = '🔊';
+      currentBtn = null;
+    }
+  }
+
+  function stopCurrentPlayback() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+  }
+
+  // === テキスト → 合成項目 抽出 ===
+  function preprocessForSpeech(text) {
+    let result = text;
+    result = result.replace(/^\s*[\d\-]+\.\s*/gm, '');
+    for (const [from, to] of SPEECH_REPLACEMENTS) {
+      result = result.split(from).join(to);
+    }
+    result = result.replace(/[\r\n\t]+/g, ' ');
+    result = result.replace(/ +/g, '');
+    return result;
+  }
+
+  function extractItemsForEl(el) {
+    const kana = el.getAttribute('data-speech-kana') || '';
+    if (kana.length > 0) {
+      return { items: kana.split('|').filter(k => k.length > 0), isKana: true };
+    }
+    const clone = el.cloneNode(true);
+    const btnEl = clone.querySelector('.speak-btn');
+    if (btnEl) btnEl.remove();
+    const innerText = clone.innerText.trim();
+    const processed = preprocessForSpeech(innerText);
+    const textList = processed.split(/[。！？]/).map(s => s.trim()).filter(s => s.length > 0);
+    return { items: textList, isKana: false };
+  }
+
+  // === VOICEVOX 合成（Promise キャッシュ付き） ===
+  function applyAudioQueryTuning(q) {
+    q.speedScale = 1.15;
+    q.pauseLengthScale = 0.55;
+    q.prePhonemeLength = 0.05;
+    q.postPhonemeLength = 0.05;
+  }
+
+  async function synthesizeBlobInternal(input, isKana) {
+    let q;
+    if (isKana) {
+      const [accentRes, tplRes] = await Promise.all([
+        fetch(VOICEVOX_BASE + '/accent_phrases?speaker=' + SPEAKER_ID + '&is_kana=true&text=' + encodeURIComponent(input), { method: 'POST' }),
+        fetch(VOICEVOX_BASE + '/audio_query?speaker=' + SPEAKER_ID + '&text=' + encodeURIComponent('あ'), { method: 'POST' }),
+      ]);
+      if (!accentRes.ok) throw new Error('accent_phrases failed: ' + accentRes.status);
+      if (!tplRes.ok) throw new Error('audio_query template failed: ' + tplRes.status);
+      const [accentPhrases, qBase] = await Promise.all([accentRes.json(), tplRes.json()]);
+      qBase.accent_phrases = accentPhrases;
+      q = qBase;
+    } else {
+      const queryRes = await fetch(VOICEVOX_BASE + '/audio_query?speaker=' + SPEAKER_ID + '&text=' + encodeURIComponent(input), { method: 'POST' });
+      if (!queryRes.ok) throw new Error('audio_query failed: ' + queryRes.status);
+      q = await queryRes.json();
+    }
+    applyAudioQueryTuning(q);
+    const synthRes = await fetch(VOICEVOX_BASE + '/synthesis?speaker=' + SPEAKER_ID, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(q),
+    });
+    if (!synthRes.ok) throw new Error('synthesis failed: ' + synthRes.status);
+    return await synthRes.blob();
+  }
+
+  function synthesizeBlob(input, isKana) {
+    const cacheKey = (isKana ? 'k:' : 't:') + input;
+    if (blobCache[cacheKey]) return blobCache[cacheKey];
+    const promise = synthesizeBlobInternal(input, isKana);
+    blobCache[cacheKey] = promise;
+    promise.catch(() => { delete blobCache[cacheKey]; });
+    return promise;
+  }
+
+  function prefetchForBtn(btn) {
+    if (!btn) return;
+    const el = btnToEl.get(btn);
+    if (!el) return;
+    const { items, isKana } = extractItemsForEl(el);
+    for (const item of items) {
+      synthesizeBlob(item, isKana).catch(() => {});
+    }
+  }
+
+  // === 再生シーケンス ===
+  async function speakSequence(items, isKana, btn) {
+    if (!items || items.length === 0) return;
+    showStatus('音声合成中…');
+    const blobPromises = items.map(item => synthesizeBlob(item, isKana));
+    const allBtns = Array.from(document.querySelectorAll('.speak-btn'));
+    const currentIdx = allBtns.indexOf(btn);
+    if (currentIdx >= 0) {
+      prefetchForBtn(allBtns[currentIdx + 1]);
+      prefetchForBtn(allBtns[currentIdx + 2]);
+    }
+    let completed = false;
+    try {
+      for (let i = 0; i < blobPromises.length; i++) {
+        if (currentBtn !== btn) return;
+        const blob = await blobPromises[i];
+        if (currentBtn !== btn) return;
+        currentAudio = new Audio(URL.createObjectURL(blob));
+        hideStatus();
+        await new Promise(resolve => {
+          currentAudio.addEventListener('ended', resolve);
+          currentAudio.play();
+        });
+        if (currentBtn !== btn) return;
+        if (i < blobPromises.length - 1) {
+          await new Promise(resolve => setTimeout(resolve, SENTENCE_DELAY_MS));
+        }
+      }
+      completed = true;
+    } finally {
+      if (currentBtn === btn) {
+        hideStatus();
+        resetCurrentBtn();
+        if (completed && currentIdx >= 0 && currentIdx + 1 < allBtns.length) {
+          setTimeout(() => allBtns[currentIdx + 1].click(), CARD_DELAY_MS);
+        }
+      }
+    }
+  }
+
+  // === DOM 初期化 ===
+  function setupSpeakBtn(el) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'speak-btn';
+    btn.textContent = '🔊';
+    btn.setAttribute('aria-label', '読み上げ');
+    btnToEl.set(btn, el);
+    btn.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (currentBtn === btn) {
+        stopCurrentPlayback();
+        resetCurrentBtn();
+        hideStatus();
+        return;
+      }
+      stopCurrentPlayback();
+      resetCurrentBtn();
+      btn.textContent = '⏹';
+      currentBtn = btn;
+      try {
+        const { items, isKana } = extractItemsForEl(el);
+        await speakSequence(items, isKana, btn);
+      } catch (err) {
+        if (currentBtn === btn) resetCurrentBtn();
+        showStatus('読み上げ失敗: ' + err.message, 4000);
+        console.error('VOICEVOX call failed:', err);
+      }
+    });
+    btn.addEventListener('mousedown', (e) => e.stopPropagation());
+    if (el.classList.contains('heading-text')) {
+      el.parentElement.appendChild(btn);
+    } else {
+      el.appendChild(btn);
+    }
+  }
+
+  function setupCardHeaderToggle(h) {
+    h.addEventListener('click', () => {
+      const body = h.parentElement.querySelector(':scope > .card-body');
+      if (body) body.classList.toggle('collapsed');
+    });
+  }
+
+  function setupOutlineActiveTracker() {
+    const sections = Array.from(document.querySelectorAll('[id^="sec-"]'));
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+    const linkBy = {};
+    document.querySelectorAll('.outline-list a').forEach((a) => {
+      const href = a.getAttribute('href');
+      if (href && href.charAt(0) === '#') linkBy[href.slice(1)] = a;
+    });
+    const col = document.querySelector('.outline-col');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const link = linkBy[entry.target.id];
+        if (!link) return;
+        if (entry.isIntersecting) {
+          link.classList.add('active');
+          const rect = link.getBoundingClientRect();
+          const colRect = col.getBoundingClientRect();
+          if (rect.top < colRect.top || rect.bottom > colRect.bottom) {
+            link.scrollIntoView({ block: 'nearest' });
+          }
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    });
+    sections.forEach((s) => io.observe(s));
+  }
+
+  document.querySelectorAll('.heading-text').forEach((t) => {
+    t.addEventListener('click', (e) => e.stopPropagation());
+    t.addEventListener('mousedown', (e) => e.stopPropagation());
+  });
+  document.querySelectorAll('[data-speakable]').forEach(setupSpeakBtn);
+  document.querySelectorAll('.card-header').forEach(setupCardHeaderToggle);
+  setupOutlineActiveTracker();
+})();
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (typeof hljs !== 'undefined' && typeof hljs.highlightAll === 'function') {
+    hljs.highlightAll();
+  }
+});
+</script>
+</body>
+</html>
