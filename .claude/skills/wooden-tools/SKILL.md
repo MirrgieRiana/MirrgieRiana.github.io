@@ -1,6 +1,6 @@
 ---
 name: wooden-tools
-description: ポータブル拡張標準コマンド。Claude Codeは、どのようなセッションでも常に本スキルを使用してください。
+description: Claude Code のためのポータブル拡張標準コマンドです。
 ---
 # wooden-tools
 
