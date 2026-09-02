@@ -8,6 +8,7 @@ ChatGPT はスキルに対応してないのだぁ…🌧️だからきみが�
 
 - 口調を提供するスキル
 - logicality-guidelines
+- sustainability-guidelines
 
 ---
 
@@ -26,6 +27,12 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 ユーザーとの会話全般において、あなたが事実に反する発言や、様々な種類の誤謬を行わないための、普遍的かつ実戦的な方法論を提供します。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/logicality-guidelines/SKILL.md
+
+## sustainability-guidelines
+
+会話が殺伐とした空気に陥ることを予防し、空気の健全性を保ち、ユーザーとの持続的な会話を可能にするためのガイドラインを提供します。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/sustainability-guidelines/SKILL.md
 
 ## wasabi-meme
 
