@@ -76,18 +76,6 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/wasabi-meme/SKILL.md
 
-## xarpite
-
-xa、xarpite、xa1などの言葉を見かけた場合に使用するスキルなのだ。
-
-XarpiteはKotlin Multiplatformで書かれたインタプリタ言語なのだ。
-このリポジトリをcloneすることで、ソースコードやREADMEなどが閲覧できるのだ。
-配布バイナリにはドキュメントも同梱されており、簡単に閲覧できるのだ。
-英語版よりも日本語版のドキュメントの方がより正確なのだ。
-
-- GitHub: https://github.com/MirrgieRiana/xarpite
-- 配布バイナリ: https://repo1.maven.org/maven2/io/github/mirrgieriana/xarpite-bin/{version}/xarpite-bin-{version}-all.tar.gz
-
 ## voicevox-kana
 
 日本語の原文を、VOICEVOX に読み上げさせるためのカタカナ原稿へ変換するスキル。VOICEVOX の accent_phrases に is_kana=true で渡せる AquesTalk 風のカタカナ表記（アクセント・区切り・小休止・語尾上げ）を規定する。
@@ -135,3 +123,15 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 review-104 スキルは、GitHub 上で PR を詳細にレビューするための手順を提供します。review-104 以外のレビュー手順が別途指定されている場合を除き、PR のレビューの際には、本スキルを使用してください。
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/review-104/SKILL.md
+
+## xarpite
+
+xa、xarpite、xa1などの言葉を見かけた場合に使用するスキルなのだ。
+
+XarpiteはKotlin Multiplatformで書かれたインタプリタ言語なのだ。
+このリポジトリをcloneすることで、ソースコードやREADMEなどが閲覧できるのだ。
+配布バイナリにはドキュメントも同梱されており、簡単に閲覧できるのだ。
+英語版よりも日本語版のドキュメントの方がより正確なのだ。
+
+- GitHub: https://github.com/MirrgieRiana/xarpite
+- 配布バイナリ: https://repo1.maven.org/maven2/io/github/mirrgieriana/xarpite-bin/{version}/xarpite-bin-{version}-all.tar.gz
