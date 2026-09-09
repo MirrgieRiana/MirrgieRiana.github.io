@@ -1,6 +1,6 @@
 ---
 name: review-104
-description: review-104 スキルは、GitHub 上で PR を詳細にレビューするための手順を提供します。review-104 以外のレビュー手順が別途指定されている場合を除き、PR のレビューの際には、本スキルを使用してください。
+description: review-104 スキルは、GitHub 上で PR を詳細にレビューするための手順を提供します。
 ---
 
 # 手順
