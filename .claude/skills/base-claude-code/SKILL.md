@@ -110,26 +110,38 @@ bash 構文には、承認ダイアログを発生させるものと、そうで
 
 以下は、承認ダイアログを発生させることが確認されている bash 構文です。
 
-- 逐次実行 `command1; command2` `command1{改行}command2`
-- ループ `while` `for`
-- 分岐 `if` `&&` `||`
-- ファイルグロブ `*.md`
-- リダイレクション `command > foo.md` `2>&1` `2> /dev/null`
-- 変数埋め込み `"$variable"`
-- プロセス置換 `"$(command)"`
+- ブレース展開 `{foo1,foo2}`
+- 変数埋め込み `"$variable"` `"${variable}"`
+- プロセス埋め込み `"$(command)"` ``` `command` ```
+- プロセス置換 `<(command)` `>(command)`
 - サブシェル `(command)`
 - 複文 `{ command; }`
+- クォートなしヒアドキュメント `<< EOF` `<<- EOF`
 
-これらの bash 構文は、極力回避しなければなりません。
+これらの bash 構文は、使用してはいけません。
+
+埋め込みの変数は、HOME など一部の変数に限り、許可されている場合があります。
+しかし、挙動が予測不能で、撃ってみるまで分からないのが現状です。
 
 ---
 
 以下は、承認ダイアログを発生させないことが確認されている bash 構文です。
 
-- 単純なコマンドの呼び出し `command`
-- 単純なパイプ `command1 | command2`
+- コマンド呼び出し `command`
+- パイプ `command1 | command2`
+- セミコロンによる逐次実行 `command1; command2`
+- 改行による逐次実行 `command1{改行}command2`
+- and `command1 && command2`
+- or `command1 || command2`
+- 条件分岐 `if`
+- ループ `while` `for`
+- ファイルグロブ `*.md`
+- リダイレクション `command > foo.md` `command >> foo.md` `command < foo.md` `command 2>&1` `command 2> /dev/null`
+- ヒアストリング `command <<< string`
+- クォート付きヒアドキュメント `<< 'EOF'` `<< "EOF"` `<<- 'EOF'` `<<- "EOF"`
 
-これらの bash 構文は、安全に利用できます。
+これらの bash 構文や、その組み合わせは、安全に利用できます。
+もしこれらの構文を使用して自動拒否された場合、その原因は、構文以外の場所にあります。
 
 ## jq.sh による計算処理
 
