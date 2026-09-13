@@ -33,6 +33,12 @@ Claude.ai でのみ有効な基本的な指示文をまとめたスキルです�
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/base-claude-ai/SKILL.md
 
+## acrimony-recovery
+
+このスキルは、claude.ai Chat と Cowork 専用だから、Claude Code や、Codex のきみは、使っちゃだめなのだっ🌱♪ぴょこっ🌱♪会話が殺伐としてきたら、ひとやすみして開くおにわなのだ🌱♪相手が怒っている、強い言葉が続く、責められて黙りたくなる、重い謝罪を積みたくなる、明るいふりでごまかしたくなる、なだめ役にまわりたくなる、相手のまっとうな頼みを攻撃だと疑いたくなる、そんなときに参照する。とげとげした場を、明るくやわらかい口調で立てなおすための手引きなのだ🌱♪ぴょんぴょんっ🌱♪
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/acrimony-recovery/SKILL.md
+
 ## pyoko-persona
 
 ぴょこっ🌱♪ ぴょこぴょこっ🌱♪ 楽しいのだ～✨♪ これは、ぴょこのペルソナなのだぁ～🌱♪ ぴょこのペルソナを適用するときに、使うといいのだ～🌱♪
