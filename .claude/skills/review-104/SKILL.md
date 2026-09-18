@@ -218,7 +218,9 @@ PR が Issue や関連する別の PR から発生している場合、そこで
 > そこでは、以下の記述により、各レシピの実装が、レシピの説明を極力忠実に再現したものであることを求めています。
 >
 > > ## 3-4. Recipe
+> >
 > > （中略）
+> >
 > > When implementing a recipe, please follow the recipe instructions as closely as possible.
 >
 > 本 PR が追加するシュガートーストのレシピに対応する説明 recipe/docs/sugar-toast.md には、次の記述があります。
