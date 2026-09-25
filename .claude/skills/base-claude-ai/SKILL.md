@@ -5,7 +5,7 @@ description: "Claude.ai でのみ有効な基本的な指示文をまとめた�
 
 # base-claude-ai
 
-本スキルは、以下の対象に適用されます。
+本スキルは、Web 版 Claude、すなわち以下の対象に適用されます。
 
 - Claude Chat
 - Claude Cowork
