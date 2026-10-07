@@ -25,15 +25,17 @@ powershell=$(command -v powershell.exe) || {
 export title=$1
 export message=$2
 
+basedir=$(dirname -- "$0")
+
 
 xa() {
-    "$(dirname -- "$0")"/../../xarpite/xarpite -A 5 -e "$@"
+    "$basedir"/../../xarpite/xarpite -A 5 -e "$@"
 }
 power_shell() {
     "$powershell" -NoProfile -EncodedCommand "$(iconv -f UTF-8 -t UTF-16LE | base64 -w0)"
 }
 
-icon_file="./claude.png"
+icon_file="$basedir/claude.png"
 
 
 export icon_url=$(
