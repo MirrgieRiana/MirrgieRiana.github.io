@@ -16,5 +16,6 @@ description: Claude Code のためのポータブル拡張標準コマンドで�
 - `gh.sh` - 一部の読み取り系の機能のみを受け付ける gh コマンドのラッパーです。
 - `toast-wsl.sh` - WSL 上から、ホスト側の Windows マシン上に通知を送ります。
 - `fetch.sh` - URL に対して GET アクセスのみを行う curl のラッパーです。
+- `chrome.sh` - chrome を安全に呼び出すためのラッパーです。
 
 各ツールは、PATH 上にはなく、シェルスクリプトとして本スキル内に同梱されています。
