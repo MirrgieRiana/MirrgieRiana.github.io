@@ -19,4 +19,5 @@ fi
 exec "$chrome_path" \
   --headless \
   --incognito \
-  --remote-debugging-port=0
+  --remote-debugging-port=0 \
+  --password-store=basic
