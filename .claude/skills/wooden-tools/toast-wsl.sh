@@ -35,7 +35,11 @@ power_shell() {
     "$powershell" -NoProfile -EncodedCommand "$(iconv -f UTF-8 -t UTF-16LE | base64 -w0)"
 }
 
-icon_file="$basedir/claude.png"
+if [[ -v CODEX_VERSION ]]; then
+    icon_file="$basedir/codex.png"
+else
+    icon_file="$basedir/claude.png"
+fi
 
 
 export icon_url=$(
