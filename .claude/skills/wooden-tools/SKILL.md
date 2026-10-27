@@ -1,6 +1,6 @@
 ---
 name: wooden-tools
-description: Claude Code のためのポータブル拡張標準コマンドです。
+description: Codex および Claude Code のためのポータブル拡張標準コマンドです。
 ---
 
 # wooden-tools
