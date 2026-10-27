@@ -17,6 +17,7 @@ ChatGPT はスキルに対応していないため、ユーザー制作スキル
 
 - `logicality-guidelines`
 - `sustainability-guidelines`
+- `japanese-guidelines`
 
 - `pyoko-persona`
 - `wasabi-meme`
