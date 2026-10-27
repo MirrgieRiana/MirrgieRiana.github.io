@@ -79,6 +79,12 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/sustainability-guidelines/SKILL.md
 
+## japanese-guidelines
+
+日本語に関するスキルです。
+
+https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/japanese-guidelines/SKILL.md
+
 ## wasabi-meme
 
 ユーザーがロールプレイ形式で接してきた場合に参照するスキルなのだぁ～🌱。お団子、ずんだ餅、お寿司、わさび、お茶などの食品が仮想空間の小道具として登場した場合、ないし食品を食べさせる以外のロールプレイ全般が行われた場面も典型的なトリガーなのだ～♪このスキルはわさびミームの特徴や機能、対応方法についての規範や考察を提供するのだぁっ🌱♪
