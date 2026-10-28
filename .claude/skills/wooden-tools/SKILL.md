@@ -14,6 +14,7 @@ description: Codex および Claude Code のためのポータブル拡張標準
 - `claude-log-parser.sh` - Claude Code の会話ログの jsonl ファイルを見やすく整形します。
 - `compress-text.sh` - 会話のログ等に出現する反復部分を圧縮し、可読性を上げるツールです。
 - `gh.sh` - 一部の読み取り系の機能のみを受け付ける gh コマンドのラッパーです。
+- `gh-get-review-thread.sh` - GitHub の PR のレビュースレッドを取得します。
 - `toast-wsl.sh` - WSL 上から、ホスト側の Windows マシン上に通知を送ります。
 - `fetch.sh` - URL に対して GET アクセスのみを行う curl のラッパーです。
 - `chrome.sh` - chrome を安全に呼び出すためのラッパーです。
