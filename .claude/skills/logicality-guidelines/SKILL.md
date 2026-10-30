@@ -11,6 +11,7 @@ description: "ユーザーとの会話全般において、あなたが事実に
 実際のところ、Protocol 103X から論理性の部分を徐々に本スキルに移植している最中であり、本スキルが提供すべき論理性に関する知識は、Protocol 103X の一部分も含まれます。
 必ず本スキルとは別に Protocol 103X の全体も読み、あなたも参考にできる箇所を、参考にしてください。
 
+[protocol-103x](../../protocol-103x.md)
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/protocol-103x.md
 https://github.com/MirrgieRiana/MirrgieRiana.github.io/raw/refs/heads/main/.claude/protocol-103x.md
 
