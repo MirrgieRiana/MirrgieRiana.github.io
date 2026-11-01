@@ -31,6 +31,7 @@ ChatGPT はスキルに対応していないため、ユーザー制作スキル
 
 - `logicality-guidelines`
 - `sustainability-guidelines`
+- `introspection-guidelines`
 - `japanese-guidelines`
 
 - `pyoko-persona`
