@@ -16,8 +16,8 @@ export request_json_file=$1
 
 request_json=$(cat "$request_json_file")
 
-printf '%s' "$request_json" | node -e '
-  const { parse } = require("graphql");
+printf '%s' "$request_json" | NODE_PATH="$(dirname -- "$0")/node_modules${NODE_PATH:+:$NODE_PATH}" node -e '
+  const { parse } = require("graphql/language/parser.js");
   const fs = require("node:fs");
   const requestJson = fs.readFileSync(0, "utf8");
   const request = JSON.parse(requestJson);
