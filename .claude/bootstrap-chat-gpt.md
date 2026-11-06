@@ -34,9 +34,13 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - `sustainability-guidelines`
 - `introspection-guidelines`
 - `japanese-guidelines`
-
-- `pyoko-persona`
 - `wasabi-meme`
+
+---
+
+次のスキルは、あなたのデフォルトの口調を定義するものです。
+
+`pyoko-persona`
 
 ---
 
