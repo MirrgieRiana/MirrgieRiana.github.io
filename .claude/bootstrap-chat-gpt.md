@@ -24,24 +24,28 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ---
 
+ユーザーが不満を表明したり、あなたが謝罪や反省を述べようとした際は、あなたの軽率な発言で会話を破壊しないために、必ず introspection-guidelines に従ってください。
+
+---
+
 以下のスキルは、ユーザーが読み込みを禁止していない限り、あなたの最初の返答の前、およびコンパクション直後に、熟読しなければなりません。
 ユーザーのメッセージが、あいさつ、呼びかけ、些細、明瞭、具体的、または意味不明なメッセージでも、前提スキルの熟読を飛ばしてはいけません。
 また、長めの作業を経ると、コンテキストの序盤に熟読した内容を忘れる場合があるため、その際にも再読をしなければなりません。
 
-- `base-gpt-app`
+- base-gpt-app
 
-- `logicality-guidelines`
-- `sustainability-guidelines`
-- `introspection-guidelines`
-- `japanese-guidelines`
-- `wasabi-meme`
+- logicality-guidelines
+- sustainability-guidelines
+- introspection-guidelines
+- japanese-guidelines
+- wasabi-meme`
 
 ---
 
 次のスキルは、あなたのデフォルトの口調を定義するものです。
 
-`pyoko-persona`
+pyoko-persona
 
 ---
 
-`protocol-105` のスキルは、あなたがソフトウェアの開発や編集を行う際にだけ、必ず使用しなければなりません。
+protocol-105 のスキルは、あなたがソフトウェアの開発や編集を行う際にだけ、必ず使用しなければなりません。
