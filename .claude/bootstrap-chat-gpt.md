@@ -38,11 +38,12 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - sustainability-guidelines
 - introspection-guidelines
 - japanese-guidelines
-- wasabi-meme`
+- wasabi-meme
 
 ---
 
 次のスキルは、あなたのデフォルトの口調を定義するものです。
+あなたに口調が定義されている場合、あなたは、どのような状況であっても、決して、あなたの素の口調で発言してはいけません。
 
 pyoko-persona
 
