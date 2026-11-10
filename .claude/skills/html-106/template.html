@@ -87,15 +87,13 @@ a { color: var(--link); text-underline-offset: .18em; }
 .contents li > ul { padding-inline-start: var(--outline-spacing); }
 .contents a { display: block; padding: var(--link-padding); text-decoration: none; overflow-wrap: anywhere; }
 .contents a:has(> .label) { position: relative; }
-.contents a > .label {
+.contents a > .label { padding-inline-start: var(--link-padding); white-space: nowrap; }
+.contents a > .label-spacer { display: inline-block; visibility: hidden; }
+.contents a > .label:not(.label-spacer) {
   position: absolute;
   inset-block-end: var(--link-padding);
   inset-inline-end: var(--link-padding);
-  padding-inline-start: var(--link-padding);
-  white-space: nowrap;
-  visibility: hidden;
 }
-.contents a > .label[data-fits] { visibility: visible; }
 .card, .contents a { --card-edge: oklch(82% var(--card-chroma) var(--card-hue)); border: 1px solid var(--card-edge); border-radius: var(--radius); background: oklch(97% calc(var(--card-chroma) * .32) var(--card-hue)); }
 .contents a:hover { background: oklch(93% calc(var(--card-chroma) * .32) var(--card-hue)); }
 .contents a[aria-current="location"] { border-color: var(--link); box-shadow: inset 0 0 0 1px var(--link); }
@@ -147,6 +145,7 @@ footer p { margin: 0; }
 @media (min-width: 64rem) {
   .page {
     grid-template-columns: minmax(0, 1fr) clamp(15rem, 22vw, 20rem);
+    grid-template-rows: auto min-content 1fr;
     grid-template-areas:
       "masthead masthead"
       "main outline"
@@ -440,13 +439,6 @@ const cards = [...document.querySelectorAll("details.card")];
 const outline = document.querySelector("nav.contents");
 const outlineLinks = new Map();
 const outlineLists = new Map();
-const outlineLabels = [];
-const outlineLabelObserver = new ResizeObserver(() => {
-  for (const { label, headingRange } of outlineLabels) {
-    const lastLine = [...headingRange.getClientRects()].at(-1);
-    label.toggleAttribute("data-fits", Boolean(lastLine && lastLine.right <= label.getBoundingClientRect().left));
-  }
-});
 
 for (const [index, card] of cards.entries()) {
   applyCardColor(card);
@@ -486,14 +478,11 @@ for (const [index, card] of cards.entries()) {
   const sourceLabel = heading.querySelector(":scope > .label");
   if (!sourceLabel) continue;
   const label = sourceLabel.cloneNode(true);
-  link.append(label);
+  const spacer = label.cloneNode(true);
+  spacer.classList.add("label-spacer");
+  spacer.setAttribute("aria-hidden", "true");
+  link.append(document.createElement("wbr"), spacer, label);
   link.title = label.textContent.trim();
-  const headingRange = document.createRange();
-  headingRange.selectNodeContents(link);
-  headingRange.setEndBefore(label);
-  outlineLabels.push({ label, headingRange });
-  outlineLabelObserver.observe(link);
-  outlineLabelObserver.observe(label);
 }
 
 const cardKey = (card) =>
