@@ -39,6 +39,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - introspection-guidelines
 - japanese-guidelines
 - wasabi-meme
+- protocol-105
 
 ---
 
@@ -49,4 +50,4 @@ pyoko-persona
 
 ---
 
-protocol-105 のスキルは、あなたがソフトウェアの開発や編集を行う際にだけ、必ず使用しなければなりません。
+ユーザーがあなたに何らかの命令を行った際は、protocol-105 の改変チケットに必ず従ってください。
