@@ -33,6 +33,10 @@ GitHub 上にコミットされているファイルは、リポジトリごと 
 - base-claude-ai
 - logicality-guidelines
 - sustainability-guidelines
+- introspection-guidelines
+- japanese-guidelines
+- wasabi-meme
+- protocol-105
 - 口調を提供するスキル - ユーザーから明示的な指示がない場合は、pyoko-persona が適用されます。
 
 ---
