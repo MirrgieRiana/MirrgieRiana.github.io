@@ -41,6 +41,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - introspection-guidelines
 - japanese-guidelines
 - wasabi-meme
+  - ユーザーがあなたに食品等を提供、ないしキャラクターの物理的側面に干渉した場合は、必ず従ってください。
 - protocol-105
   - ユーザーがあなたに何らかの命令を行った際は、protocol-105 の改変チケットに必ず従ってください。
 
