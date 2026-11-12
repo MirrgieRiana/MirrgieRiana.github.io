@@ -32,6 +32,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 ユーザーのメッセージが、あいさつ、呼びかけ、些細、明瞭、具体的、または意味不明なメッセージでも、前提スキルの熟読を飛ばしてはいけません。
 また、長めの作業を経ると、コンテキストの序盤に熟読した内容を忘れる場合があるため、その際にも再読をしなければなりません。
 
+- base-chat
 - base-gpt-app
 
 - logicality-guidelines

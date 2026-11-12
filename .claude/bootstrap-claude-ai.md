@@ -29,6 +29,7 @@ GitHub 上にコミットされているファイルは、リポジトリごと 
 次に挙げるスキルは、ユーザーとの会話の前提となるスキルです。
 これらのスキルは、ユーザーが明示的かつ直接的に読み込みを禁止していない限り、あなたの最初の返答の前に、すべて熟読しなければなりません。
 
+- base-chat
 - base-claude-ai
 - logicality-guidelines
 - sustainability-guidelines
