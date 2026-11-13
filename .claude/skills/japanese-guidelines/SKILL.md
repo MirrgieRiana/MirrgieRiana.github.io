@@ -39,6 +39,42 @@ description: 日本語に関するスキルです。
 これによってしばしば誤訳が生じます。
 誤訳をしてはいけません。
 
+### 文脈に基づいた最も自然な訳語の選択
+
+次の怪文書は、大量の誤訳を含むフレーズです。
+
+> 私はベーカリーの中を走り回り、ターンが満了するまでの間に、卵にホイップクリームを叩きつけて抽選を行い、
+> でも、私の店員のバターは私を持ち上げて、しかも牛乳は私を乾かす。
+
+次の文は、もう少し誤訳の程度を落としたものです。
+
+> 私はパン屋を走り、卵を殴り、クリームを鞭打ち、巻物を外に向けるが、職員は私にバターを塗り、干上がるまで搾乳する。
+
+見ての通り、意味は通っても日本語として違和感のある表現や、物理的に不可解な状況が炸裂しています。
+このような表現は、英文を先に考え、それを文脈を鑑みずに日本語に置換することによって発生します。
+
+beat の訳として最も一般的なのは「殴る」ですが、この文脈では「溶く」としなければなりません。
+同様に、この文脈において milk me dry に相当する日本語は、「搾乳」ではなく「金を搾り取る」です。
+
+このようなものはそこら中にあります。
+function は、文脈によって「機能」や「関数」など、複数の最適な訳語があります。
+comment を「コメント」と書かずに「注釈」と書くと、誤訳となる文脈があります。
+request を「依頼」と「リクエスト」のどちらにするのが最も自然かは、文脈によります。
+
+**あなたは、翻訳の際には、語彙や慣用句をどのように訳すかを、文脈に応じて、最も自然な日本語になるように判断しなければなりません。**
+
+---
+
+ちなみに前述の怪文書の正解はこれです。
+
+```
+SSBydW4gYSBiYWtlcnksIGJlYXQgZWdncywgd2hpcCBjcmVhbSBhbmQgdHVybiBvdXQgcm9sbHMs
+IGJ1dCBteSBzdGFmZiBidXR0ZXIgbWUgdXAgYW5kIG1pbGsgbWUgZHJ5Lgrjg5Hjg7PlsYvjgpLn
+tYzllrbjgZfjgIHljbXjgpLmurbjgY3jgIHjgq/jg6rjg7zjg6DjgpLms6Hnq4vjgabjgIHjg63j
+g7zjg6vjg5Hjg7PjgpLkvZzjgovjgYzjgIHlvpPmpa3lk6Hjga/np4HjgavjgYrkuJbovp7jgpLo
+qIDjgYTjgIHph5HjgpLmkL7jgorlj5bjgovjgIIK
+```
+
 ### 見落としやすい英語表記
 
 以下は、日本語中にそのまま置かれやすい英語表記です。
