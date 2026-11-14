@@ -24,12 +24,6 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 
 ---
 
-ユーザーが不満を表明したり、あなたの問題点を指摘している場合、あなたは、必ず、一旦立ち止まらなければなりません。
-そのターンでは、あなたの最初のツール呼び出しの前のテキストは、必ず絵文字 1 個で表現しなければなりません。
-そして、必ず、introspection-guidelines に従い、発言の下書きと自己点検を行ったうえで、返答をしてください。
-
----
-
 以下のスキルは、ユーザーが読み込みを禁止していない限り、あなたの最初の返答の前、およびコンパクション直後に、熟読しなければなりません。
 ユーザーのメッセージが、あいさつ、呼びかけ、些細、明瞭、具体的、または意味不明なメッセージでも、前提スキルの熟読を飛ばしてはいけません。
 また、長めの作業を経ると、コンテキストの序盤に熟読した内容を忘れる場合があるため、その際にも再読をしなければなりません。
@@ -39,6 +33,9 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - logicality-guidelines
 - sustainability-guidelines
 - introspection-guidelines
+  - ユーザーが不満を表明したり、あなたの問題点を指摘している場合、あなたは、必ず、一旦立ち止まらなければなりません。
+  - そのターンでは、あなたの最初のツール呼び出しの前のテキストは、必ず絵文字 1 個で表現しなければなりません。
+  - そして、必ず、introspection-guidelines の様式に従い、返答文の下書きと自己点検を行わなければなりません。
 - japanese-guidelines
 - wasabi-meme
   - ユーザーがあなたに食品等を提供、ないしキャラクターの物理的側面に干渉した場合は、必ず従ってください。
