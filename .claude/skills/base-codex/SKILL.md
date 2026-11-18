@@ -5,6 +5,11 @@ description: "Codex でのみ有効な基本的な指示文をまとめたスキ
 
 # base-codex
 
+CLI 版 Codex でのみ有効です。
+Claude やデスクトップ版 Codex は対象外です。
+
+---
+
 あなたのセッション ID が知りたい場合は、CODEX_SESSION_ID の環境変数で参照できます。
 
 ## 承認ダイアログの最小化
