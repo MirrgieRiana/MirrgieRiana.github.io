@@ -150,6 +150,31 @@ pre .token:is(.function, .class-name) { color: #b22d49; }
 pre .token:is(.regex, .important, .variable) { color: #885900; }
 pre .token.inserted-sign, pre .token.deleted-sign { margin-inline: calc(-1 * var(--code-inset)); padding-inline: var(--code-inset); }
 ::highlight(selection-match) { background-color: #ffe69c; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (mix-blend-mode: multiply) {
+    ::highlight(selection-match) { background-color: #fff; }
+  }
+}
+.selection-match-host { position: relative; }
+.selection-match-sheen {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(ellipse 18px 5px at 33% 25%, #ffffffdc, transparent),
+    radial-gradient(ellipse 24px 7px at 76% 78%, #ffffffdc, transparent),
+    repeating-linear-gradient(135deg,
+      #fff 0% 3%, color-mix(in srgb, #c4f2fa 90%, #fff) 9%,
+      #fff 16% 20%, color-mix(in srgb, #fff1a5 90%, #fff) 26%,
+      #fff 33% 37%, color-mix(in srgb, #f8ccef 90%, #fff) 43%, #fff 49% 50%);
+  background-size: 112px 112px;
+  animation: selection-match-flow 3.25s linear infinite;
+}
+@keyframes selection-match-flow {
+  from { background-position: -112px -112px; }
+  to { background-position: 0 0; }
+}
 
 footer p { margin: 0; }
 @media (min-width: 64rem) {
@@ -735,8 +760,10 @@ function installSelectionHighlights() {
   if (!registry || typeof Highlight !== "function") return;
 
   const name = "selection-match";
-  const proseSelector = ".page :is(h1, h2, h3, h4, h5, h6, p, figcaption), main li:not(:has(p, pre, ul, ol)), .contents a";
   const collapsibleSpace = /[ \t\r\n]/;
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const effects = [];
+  const effectHosts = new Set();
 
   function readText(block) {
     if (!block.getClientRects().length) return null;
@@ -752,6 +779,67 @@ function installSelectionHighlights() {
       text += node.data;
     }
     return { text, parts };
+  }
+
+  function readPageText() {
+    const chunks = [];
+    let current = null;
+
+    function visit(element, host) {
+      const style = getComputedStyle(element);
+      if (style.display === "none" || style.opacity === "0") return;
+
+      if (element.matches("pre, br")) {
+        if (element.matches("pre")) {
+          const raw = readText(element);
+          if (raw?.text) chunks.push({ host: element, code: true, ...raw });
+        }
+        current = null;
+        return;
+      }
+
+      if (style.display !== "inline" && style.display !== "contents") host = element;
+      for (const child of element.childNodes) {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          visit(child, host);
+        } else if (child.nodeType === Node.TEXT_NODE && child.length &&
+                   style.visibility === "visible" && style.userSelect !== "none") {
+          if (current?.host !== host) {
+            current = { host, text: "", parts: [] };
+            chunks.push(current);
+          }
+          current.parts.push({ node: child, start: current.text.length, end: current.text.length + child.length });
+          current.text += child.data;
+        }
+      }
+    }
+
+    visit(document.body, document.body);
+    const index = [];
+    let text = "";
+    for (const chunk of chunks) {
+      const { code, host, parts } = chunk;
+      const raw = chunk.text;
+      const fallback = raw.replace(/[ \t\r\n]+/g, " ").replace(/^ | $/g, "");
+      if (!code && !fallback) continue;
+      const rendered = code ? raw : host.innerText ?? fallback;
+      const offsets = code ? null : mapRenderedText(raw, rendered);
+      const value = code || offsets ? rendered : fallback;
+      if (!value) continue;
+
+      // Keep code whitespace literal and give each layout-block boundary one separator.
+      if (index.length) text += "\n";
+      index.push({
+        host,
+        parts,
+        text: value,
+        offsets: code ? null : offsets ?? mapRenderedText(raw, value),
+        start: text.length,
+        end: text.length + value.length
+      });
+      text += value;
+    }
+    return { text, chunks: index };
   }
 
   function spaceEnd(text, start) {
@@ -787,14 +875,6 @@ function installSelectionHighlights() {
     return { starts, ends };
   }
 
-  function indexBlock(block, code) {
-    const raw = readText(block);
-    if (!raw || code) return raw;
-    const text = block.innerText;
-    const offsets = mapRenderedText(raw.text, text);
-    return offsets && { text, parts: raw.parts, offsets };
-  }
-
   function textOffset(parts, container, offset) {
     const point = new Range();
     point.setStart(container, offset);
@@ -819,56 +899,119 @@ function installSelectionHighlights() {
     return range;
   }
 
-  function closestBlock(node) {
-    const element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
-    return element?.closest("pre") ?? element?.closest(proseSelector);
+  function selectedOffsets(chunks, range) {
+    let start = null;
+    let end = null;
+    for (const chunk of chunks) {
+      const first = chunk.parts[0].node;
+      const last = chunk.parts.at(-1).node;
+      if (range.comparePoint(last, last.length) < 0) continue;
+      if (range.comparePoint(first, 0) > 0) break;
+
+      const rawStart = textOffset(chunk.parts, range.startContainer, range.startOffset);
+      const rawEnd = textOffset(chunk.parts, range.endContainer, range.endOffset);
+      if (rawStart >= rawEnd) continue;
+      const left = chunk.offsets?.ends.findIndex(offset => offset > rawStart) ?? rawStart;
+      const next = chunk.offsets?.starts.findIndex(offset => offset >= rawEnd) ?? rawEnd;
+      const right = next < 0 ? chunk.text.length : next;
+      if (left < 0 || right <= left) continue;
+      start ??= chunk.start + left;
+      end = chunk.start + right;
+    }
+    return { start, end };
+  }
+
+  function clearMatchEffects() {
+    for (const effect of effects) effect.remove();
+    effects.length = 0;
+    for (const host of effectHosts) host.classList.remove("selection-match-host");
+    effectHosts.clear();
+  }
+
+  function matchLineRects(index, range) {
+    const rects = [];
+    const fragment = new Range();
+    const first = index.parts.findIndex(part => part.node === range.startContainer);
+    for (let partIndex = first; partIndex < index.parts.length; partIndex++) {
+      const { node } = index.parts[partIndex];
+      const isLast = node === range.endContainer;
+      fragment.setStart(node, partIndex === first ? range.startOffset : 0);
+      fragment.setEnd(node, isLast ? range.endOffset : node.length);
+      for (const rect of fragment.getClientRects()) {
+        if (rect.width && rect.height) {
+          const { left, top, right, bottom } = rect;
+          rects.push({ left, top, right, bottom });
+        }
+      }
+      if (isLast) break;
+    }
+
+    rects.sort((a, b) => a.top - b.top || a.left - b.left);
+    const lines = [];
+    for (const rect of rects) {
+      const last = lines.at(-1);
+      if (last && Math.abs(last.top - rect.top) < .5 &&
+          Math.abs(last.bottom - rect.bottom) < .5 && rect.left <= last.right + .5) {
+        last.right = Math.max(last.right, rect.right);
+      } else {
+        lines.push(rect);
+      }
+    }
+    return lines;
+  }
+
+  function drawMatchEffect(host, index, range) {
+    if (getComputedStyle(host).position === "static") {
+      host.classList.add("selection-match-host");
+      effectHosts.add(host);
+    }
+    const frame = host.getBoundingClientRect();
+    const left = frame.left + host.clientLeft - host.scrollLeft;
+    const top = frame.top + host.clientTop - host.scrollTop;
+    for (const rect of matchLineRects(index, range)) {
+      const effect = document.createElement("span");
+      effect.className = "selection-match-sheen";
+      effect.setAttribute("aria-hidden", "true");
+      effect.style.left = `${rect.left - left}px`;
+      effect.style.top = `${rect.top - top}px`;
+      effect.style.width = `${rect.right - rect.left}px`;
+      effect.style.height = `${rect.bottom - rect.top}px`;
+      host.append(effect);
+      effects.push(effect);
+    }
   }
 
   function updateSelectionHighlights() {
     frame = null;
+    clearMatchEffects();
     const selection = window.getSelection();
     if (!selection?.rangeCount || selection.isCollapsed) {
       registry.delete(name);
       return;
     }
 
-    const selected = selection.getRangeAt(0);
-    const block = closestBlock(selected.startContainer);
-    if (!block || closestBlock(selected.endContainer) !== block) {
-      registry.delete(name);
-      return;
-    }
-
-    const code = block.matches("pre");
-    const source = indexBlock(block, code);
-    if (!source) {
-      registry.delete(name);
-      return;
-    }
-
-    const rawStart = textOffset(source.parts, selected.startContainer, selected.startOffset);
-    const rawEnd = textOffset(source.parts, selected.endContainer, selected.endOffset);
-    const start = source.offsets ? source.offsets.ends.findIndex(end => end > rawStart) : rawStart;
-    const next = source.offsets?.starts.findIndex(offset => offset >= rawEnd) ?? rawEnd;
-    const end = next < 0 ? source.text.length : next;
-    const query = rawStart < rawEnd && start >= 0 ? source.text.slice(start, end) : "";
+    const { text, chunks } = readPageText();
+    const { start, end } = selectedOffsets(chunks, selection.getRangeAt(0));
+    const query = start === null ? "" : text.slice(start, end);
     if (!query) {
       registry.delete(name);
       return;
     }
 
+    const animate = !reducedMotion.matches && CSS.supports("mix-blend-mode", "multiply");
     const matches = new Highlight();
-    for (const candidate of document.querySelectorAll(code ? "pre" : proseSelector)) {
-      const index = candidate === block ? source : indexBlock(candidate, code);
-      if (!index) continue;
-
-      let match = index.text.indexOf(query);
-      while (match !== -1) {
-        if (candidate !== block || match !== start) {
-          const range = toDOMRange(index, match, match + query.length);
-          if (range) matches.add(range);
-        }
-        match = index.text.indexOf(query, match + 1);
+    let firstChunk = 0;
+    for (let match = text.indexOf(query); match !== -1; match = text.indexOf(query, match + 1)) {
+      if (match === start) continue;
+      const matchEnd = match + query.length;
+      while (chunks[firstChunk].end <= match) firstChunk++;
+      for (let chunkIndex = firstChunk; chunkIndex < chunks.length; chunkIndex++) {
+        const chunk = chunks[chunkIndex];
+        if (chunk.start >= matchEnd) break;
+        const range = toDOMRange(chunk, Math.max(0, match - chunk.start), Math.min(chunk.text.length, matchEnd - chunk.start));
+        if (!range) continue;
+        matches.add(range);
+        if (animate) drawMatchEffect(chunk.host, chunk, range);
       }
     }
 
@@ -883,6 +1026,7 @@ function installSelectionHighlights() {
 
   document.addEventListener("selectionchange", scheduleSelectionHighlights);
   window.addEventListener("resize", scheduleSelectionHighlights);
+  reducedMotion.addEventListener("change", scheduleSelectionHighlights);
   for (const card of cards) card.addEventListener("toggle", scheduleSelectionHighlights);
 }
 
