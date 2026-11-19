@@ -72,7 +72,7 @@ a { color: var(--link); text-underline-offset: .18em; }
 .kicker { color: var(--subtle); font-weight: 700; letter-spacing: .04em; margin: 0; }
 .masthead-title { display: flex; align-items: baseline; gap: .4em; margin: .2rem 0 0; font-size: clamp(1.45rem, 3.5vw, 2.3rem); line-height: 1.3; }
 .masthead-title h1 { margin: 0; font-size: inherit; }
-.masthead p:last-child, .source-link, footer { color: var(--subtle); font-size: .9rem; }
+.masthead p:last-child, .source-link, .page > footer { color: var(--subtle); font-size: .9rem; }
 .masthead p:last-child { margin: var(--padding) 0 0; }
 .contents {
   --outline-spacing: .45rem;
@@ -133,10 +133,12 @@ a { color: var(--link); text-underline-offset: .18em; }
 .evidence { display: grid; gap: .5rem; }
 figure, pre, pre[class*="language-"] { background: #fafafa; }
 figure { min-width: 0; border: 1px solid var(--frame); border-radius: .55rem; margin: 0; }
-figure:has(> pre) { overflow: clip; }
-figcaption { color: var(--subtle); font-size: .8rem; padding: .28rem var(--code-inset); border-bottom: 1px solid var(--frame); }
-figure:has(> pre) > figcaption { background: #f2f2f2; }
+figure:has(> pre, > footer) { overflow: clip; }
+figcaption, .evidence > figure > footer { color: var(--subtle); font-size: .8rem; padding: .28rem var(--code-inset); overflow-wrap: anywhere; }
+figcaption { border-block-end: 1px solid var(--frame); }
+figure:has(> pre) > figcaption, .evidence > figure > footer { background: #f2f2f2; }
 figcaption a { margin-left: .5rem; }
+.evidence > figure > footer { border-block-start: 1px solid var(--frame); }
 pre, pre[class*="language-"] { margin: 0; padding: .5rem 0; overflow: auto; tab-size: 2; font-size: .88rem; line-height: 1.55; }
 pre code { display: block; width: max-content; min-width: 100%; padding-inline: var(--code-inset); }
 pre code[class*="language-"] { tab-size: inherit; }
@@ -177,7 +179,7 @@ pre .token.inserted-sign, pre .token.deleted-sign { margin-inline: calc(-1 * var
   to { background-position: 0 0; }
 }
 
-footer p { margin: 0; }
+.page > footer p { margin: 0; }
 @media (min-width: 64rem) {
   .page {
     grid-template-columns: minmax(0, 1fr) clamp(15rem, 22vw, 20rem);
@@ -275,12 +277,13 @@ footer p { margin: 0; }
                   <p>たとえば27枚なら倍率は1.5なのだ。薄力粉は180 g、バターは120 g、粉砂糖は60 gになるのだ。抜き型の大きさや生地の厚さを変えると、同じ分量で取れる枚数も変わるのだ。</p>
                   <div class="evidence">
                     <figure>
-                      <figcaption>作りたい枚数から、3つの材料の分量をグラムで求めるのだ<a href="#batch">基準の18枚分を見る</a></figcaption>
+                      <figcaption>作りたい枚数から、3つの材料の分量をグラムで求めるのだ</figcaption>
                       <pre><code class="language-typescript">function batch(targetCount: number) {
   const factor = targetCount / 18
   return { flour: 120 * factor, butter: 80 * factor, sugar: 40 * factor }
 }
 const portions = batch(36)</code></pre>
+                      <footer><a href="#batch">18枚分の材料と配合</a></footer>
                     </figure>
                     <figure>
                       <figcaption>計算する枚数を18枚から36枚に変えるのだ</figcaption>
