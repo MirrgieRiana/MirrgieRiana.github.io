@@ -128,6 +128,7 @@ a { color: var(--link); text-underline-offset: .18em; }
 .line { display: grid; grid-template-columns: minmax(5.7rem, max-content) minmax(0, 1fr); align-items: baseline; gap: .7rem; }
 .line b { width: fit-content; font-size: .8rem; font-weight: 700; padding: .05rem .4rem; border-radius: .28rem; white-space: nowrap; }
 .line p { margin: 0; overflow-wrap: anywhere; }
+.line[data-speaker] { color: var(--speaker-text, inherit); }
 .line[data-speaker] b { background: var(--speaker-background, transparent); color: var(--speaker-text, inherit); }
 .evidence { display: grid; gap: .5rem; }
 figure, pre, pre[class*="language-"] { background: #fafafa; }
