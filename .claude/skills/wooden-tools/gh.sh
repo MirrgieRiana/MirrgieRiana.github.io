@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-xarpite -A 5 -q -e '
+"$(dirname -- "$0")/../xarpite-bin/xarpite/xarpite" --native -A 5 -q -e '
   error := () -> :
     ERR << "Blocked"
     EXIT << 1
