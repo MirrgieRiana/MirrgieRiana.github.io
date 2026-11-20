@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-if command -v xarpite >/dev/null 2>&1; then
-  xarpite=xarpite
-else
-  xarpite="$(dirname -- "$0")"/../../xarpite/xarpite
-fi
+xarpite="$(dirname -- "$0")/../xarpite-bin/xarpite/xarpite"
 
 set -euo pipefail
 
@@ -25,7 +21,7 @@ printf '%s' "$request_json" | NODE_PATH="$(dirname -- "$0")/node_modules${NODE_P
   const tree = parse(query);
   const treeJson = JSON.stringify(tree);
   console.log(treeJson);
-' | "$xarpite" -A 5 -q -e '
+' | "$xarpite" --native -A 5 -q -e '
   (IN.$*.definitions() | _.operation == "mutation" >> ANY) && :
     ERRL << "Mutation is forbidden."
     EXIT << 1

@@ -29,7 +29,7 @@ basedir=$(dirname -- "$0")
 
 
 xa() {
-    "$basedir"/../../xarpite/xarpite -A 5 -e "$@"
+    "$basedir/../xarpite-bin/xarpite/xarpite" --native -A 5 -e "$@"
 }
 power_shell() {
     "$powershell" -NoProfile -EncodedCommand "$(iconv -f UTF-8 -t UTF-16LE | base64 -w0)"

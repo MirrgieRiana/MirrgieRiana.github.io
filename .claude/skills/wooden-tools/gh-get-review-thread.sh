@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-if command -v xarpite >/dev/null 2>&1; then
-  xarpite=xarpite
-else
-  xarpite="$(dirname -- "$0")"/../../xarpite/xarpite
-fi
+xarpite="$(dirname -- "$0")/../xarpite-bin/xarpite/xarpite"
 
-gh api graphql -f "query=$("$xarpite" -A 5 -e '
+gh api graphql -f "query=$("$xarpite" --native -A 5 -e '
   ARGS.$# == 1 + 3 || :
     ERRL << "Usage: $(ARGS.0) <owner> <repo> <number>"
     EXIT << 1

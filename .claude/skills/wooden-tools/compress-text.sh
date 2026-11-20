@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-"$(dirname -- "$0")/../../xarpite/xa" -q '
+"$(dirname -- "$0")/../xarpite-bin/xarpite/xarpite" --native -q -e '
   table := []
   stringToIndex := {}
   add := s, c -> :
