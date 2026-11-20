@@ -152,6 +152,14 @@ pre .token:is(.atrule, .attr-value, .keyword) { color: #00658f; }
 pre .token:is(.function, .class-name) { color: #b22d49; }
 pre .token:is(.regex, .important, .variable) { color: #885900; }
 pre .token.inserted-sign, pre .token.deleted-sign { margin-inline: calc(-1 * var(--code-inset)); padding-inline: var(--code-inset); }
+::highlight(diff-added) { background-color: #a8e6bd; }
+::highlight(diff-removed) { background-color: #f5b3b6; }
+pre:has(> .diff-break-layer) { position: relative; }
+.diff-break-layer, .diff-break { position: absolute; pointer-events: none; user-select: none; }
+.diff-break-layer { inset: 0; }
+.diff-break { display: grid; place-items: center; width: var(--code-inset); color: #194829; background: #a8e6bd; font-size: .8em; }
+.diff-break.removed { color: #722a31; background: #f5b3b6; }
+.diff-break::before { content: "↵"; }
 ::highlight(selection-match) { background-color: #ffe69c; }
 @media (prefers-reduced-motion: no-preference) {
   @supports (mix-blend-mode: multiply) {
@@ -759,6 +767,226 @@ document.addEventListener("click", (event) => {
 <script>
 window.Prism?.highlightAllUnder(document.querySelector("main"));
 
+function readText(block, visibleOnly = true) {
+  if (visibleOnly && !block.getClientRects().length) return null;
+
+  const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  const parts = [];
+  let text = "";
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    const parent = node.parentElement;
+    if (!node.length || (visibleOnly && (!parent.getClientRects().length ||
+        getComputedStyle(parent).visibility !== "visible"))) continue;
+    parts.push({ node, start: text.length, end: text.length + node.length });
+    text += node.data;
+  }
+  return { text, parts };
+}
+
+function toDOMRange(index, start, end) {
+  const rawStart = index.offsets?.starts[start] ?? start;
+  const rawEnd = index.offsets?.ends[end - 1] ?? end;
+  if (rawStart >= rawEnd) return null;
+
+  const first = index.parts.find(part => part.end > rawStart);
+  const last = index.parts.find(part => part.end >= rawEnd);
+  const range = new Range();
+  range.setStart(first.node, rawStart - first.start);
+  range.setEnd(last.node, rawEnd - last.start);
+  return range;
+}
+
+function installDiffHighlights() {
+  const registry = window.CSS?.highlights;
+  if (!registry || typeof Highlight !== "function") return;
+  const added = new Highlight();
+  const removed = new Highlight();
+  added.priority = removed.priority = -1;
+  const breaks = [];
+  const observer = new ResizeObserver(positionBreaks);
+
+  function tokenize(text, pattern = /[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\n|[^\S\n]+|\d+|./gu) {
+    return Array.from(text.matchAll(pattern), ({ 0: value, index: start }) =>
+      ({ value, start, end: start + value.length }));
+  }
+
+  function align(oldTokens, newTokens) {
+    const equal = (i, j) => oldTokens[i].value === newTokens[j].value;
+    const pairs = [];
+    let start = 0;
+    let endOld = oldTokens.length;
+    let endNew = newTokens.length;
+    while (start < endOld && start < endNew && equal(start, start)) {
+      pairs.push([start, start]);
+      start++;
+    }
+    while (endOld > start && endNew > start && equal(endOld - 1, endNew - 1)) {
+      endOld--;
+      endNew--;
+    }
+
+    const width = endNew - start + 1;
+    const cells = (endOld - start + 1) * width;
+    if (endOld > start && endNew > start) {
+      if (cells > 250000) return null;
+      const scores = new Uint32Array(cells);
+      const offset = (i, j) => (i - start) * width + j - start;
+      for (let i = endOld - 1; i >= start; i--) {
+        for (let j = endNew - 1; j >= start; j--) {
+          const skip = Math.max(scores[offset(i + 1, j)], scores[offset(i, j + 1)]);
+          const keep = equal(i, j) ? oldTokens[i].value.length + scores[offset(i + 1, j + 1)] : 0;
+          scores[offset(i, j)] = Math.max(skip, keep);
+        }
+      }
+      for (let i = start, j = start; i < endOld && j < endNew;) {
+        if (equal(i, j) && scores[offset(i, j)] === oldTokens[i].value.length + scores[offset(i + 1, j + 1)]) {
+          pairs.push([i++, j++]);
+        } else if (scores[offset(i, j + 1)] >= scores[offset(i + 1, j)]) {
+          j++;
+        } else {
+          i++;
+        }
+      }
+    }
+    for (let i = endOld, j = endNew; i < oldTokens.length; i++, j++) pairs.push([i, j]);
+    return pairs;
+  }
+
+  function findChanges(oldText, newText) {
+    const a = tokenize(oldText);
+    const b = tokenize(newText);
+    const pairs = align(a, b);
+    if (!pairs) return null;
+    const oldMask = new Uint8Array(oldText.length).fill(1);
+    const newMask = new Uint8Array(newText.length).fill(1);
+    let oldEnd = 0;
+    let newEnd = 0;
+    const clear = (mask, token, base = 0) => mask.fill(0, base + token.start, base + token.end);
+
+    for (const [i, j] of [...pairs, [a.length, b.length]]) {
+      const oldStart = a[i]?.start ?? oldText.length;
+      const newStart = b[j]?.start ?? newText.length;
+      const before = oldText.slice(oldEnd, oldStart);
+      const after = newText.slice(newEnd, newStart);
+      // Refine a split or join when one fragment is preserved across the changed line breaks.
+      if (before && after && before.includes("\n") !== after.includes("\n")) {
+        const oldChars = tokenize(before, /./gsu);
+        const newChars = tokenize(after, /./gsu);
+        const same = align(oldChars, newChars);
+        const unbroken = before.includes("\n") ? newChars : oldChars;
+        if (same?.length === unbroken.length) {
+          for (const [x, y] of same) {
+            clear(oldMask, oldChars[x], oldEnd);
+            clear(newMask, newChars[y], newEnd);
+          }
+        }
+      }
+      if (a[i]) {
+        clear(oldMask, a[i]);
+        clear(newMask, b[j]);
+        oldEnd = a[i].end;
+        newEnd = b[j].end;
+      }
+    }
+    return [oldMask, newMask];
+  }
+
+  function positionBreaks() {
+    for (const { pre, range, mark } of breaks) {
+      const rect = range.getBoundingClientRect();
+      mark.style.visibility = rect.height ? "" : "hidden";
+      if (!rect.height) continue;
+      const frame = pre.getBoundingClientRect();
+      mark.style.left = (rect.right - frame.left - pre.clientLeft + pre.scrollLeft) + "px";
+      mark.style.top = (rect.top - frame.top - pre.clientTop + pre.scrollTop) + "px";
+      mark.style.height = rect.height + "px";
+    }
+  }
+
+  for (const code of document.querySelectorAll("pre > code.diff-highlight")) {
+    const pre = code.parentElement;
+    const index = readText(code, false);
+    const lines = index.text.split("\n");
+    let inHunk = !lines.some(line => line.startsWith("@@ "));
+    let offset = 0;
+    let previous;
+    let layer;
+    let oldRows = [];
+    let newRows = [];
+
+    function paint(rows, mask, highlight) {
+      let start = 0;
+      for (const row of rows) {
+        const end = start + row.text.length;
+        for (let i = start; i < end;) {
+          if (!mask[i]) { i++; continue; }
+          let next = i + 1;
+          while (next < end && mask[next]) next++;
+          highlight.add(toDOMRange(index, row.offset + i - start, row.offset + next - start));
+          i = next;
+        }
+        if (row.eol && mask[end]) {
+          if (!layer) {
+            layer = document.createElement("span");
+            layer.className = "diff-break-layer";
+            layer.setAttribute("aria-hidden", "true");
+            pre.append(layer);
+            observer.observe(code);
+          }
+          const lineEnd = row.offset + row.text.length;
+          const range = toDOMRange(index, row.offset - 1, lineEnd);
+          range.collapse(false);
+          const mark = document.createElement("span");
+          mark.className = highlight === removed ? "diff-break removed" : "diff-break";
+          layer.append(mark);
+          breaks.push({ pre, range, mark });
+        }
+        start = end + Number(row.eol);
+      }
+    }
+
+    function flush() {
+      if (oldRows.length && newRows.length) {
+        const join = rows => rows.map(row => row.text + (row.eol ? "\n" : "")).join("");
+        const masks = findChanges(join(oldRows), join(newRows));
+        if (masks) {
+          paint(oldRows, masks[0], removed);
+          paint(newRows, masks[1], added);
+        }
+      }
+      oldRows = [];
+      newRows = [];
+      previous = undefined;
+    }
+
+    for (const line of lines) {
+      if (line.startsWith("@@ ")) {
+        flush();
+        inHunk = true;
+      } else if (line.startsWith("diff --git ")) {
+        flush();
+        inHunk = false;
+      } else if (line === "\\ No newline at end of file" && previous) {
+        previous.eol = false;
+      } else if (inHunk && (line[0] === "-" || line[0] === "+")) {
+        if (line[0] === "-" && newRows.length) flush();
+        previous = { text: line.slice(1), offset: offset + 1, eol: true };
+        (line[0] === "-" ? oldRows : newRows).push(previous);
+      } else {
+        flush();
+      }
+      offset += line.length + 1;
+    }
+    flush();
+  }
+  registry.set("diff-added", added);
+  registry.set("diff-removed", removed);
+  positionBreaks();
+  if (breaks.length) document.fonts.ready.then(positionBreaks);
+}
+
+installDiffHighlights();
+
 function installSelectionHighlights() {
   const registry = window.CSS?.highlights;
   if (!registry || typeof Highlight !== "function") return;
@@ -768,22 +996,6 @@ function installSelectionHighlights() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const effects = [];
   const effectHosts = new Set();
-
-  function readText(block) {
-    if (!block.getClientRects().length) return null;
-
-    const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT);
-    const parts = [];
-    let text = "";
-    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-      const parent = node.parentElement;
-      if (!node.length || !parent.getClientRects().length ||
-          getComputedStyle(parent).visibility !== "visible") continue;
-      parts.push({ node, start: text.length, end: text.length + node.length });
-      text += node.data;
-    }
-    return { text, parts };
-  }
 
   function readPageText() {
     const chunks = [];
@@ -888,19 +1100,6 @@ function installSelectionHighlights() {
       if (point.comparePoint(part.node, 0) >= 0) return part.start;
     }
     return parts.at(-1)?.end ?? 0;
-  }
-
-  function toDOMRange(index, start, end) {
-    const rawStart = index.offsets?.starts[start] ?? start;
-    const rawEnd = index.offsets?.ends[end - 1] ?? end;
-    if (rawStart >= rawEnd) return null;
-
-    const first = index.parts.find(part => part.end > rawStart);
-    const last = index.parts.find(part => part.end >= rawEnd);
-    const range = new Range();
-    range.setStart(first.node, rawStart - first.start);
-    range.setEnd(last.node, rawEnd - last.start);
-    return range;
   }
 
   function selectedOffsets(chunks, range) {
