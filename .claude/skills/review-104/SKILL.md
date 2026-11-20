@@ -89,6 +89,7 @@ description: review-104 スキルは、GitHub 上で PR を詳細にレビュー
 PR によって変更されたファイルと同じ階層から、リポジトリルートまでのすべての祖先ディレクトリにおける、以下のファイルを閲覧してください。
 
 - README.md
+- AGENTS.md
 - CLAUDE.md
 - CLAUDE.local.md
 
