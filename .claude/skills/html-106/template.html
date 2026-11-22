@@ -66,6 +66,22 @@ Promise.all([templateStyle, templateScript, templateDocumentReady]).then(([, js]
   const script = document.createElement("script");
   script.textContent = js;
   document.body.append(script);
+  for (const card of document.querySelectorAll("main .card")) {
+    const header = card.querySelector(":scope > .front > .card-header");
+    if (!header) continue;
+    let wasOpen;
+    let previousTop;
+    header.addEventListener("click", () => {
+      wasOpen = card.hasAttribute("data-open");
+      previousTop = header.getBoundingClientRect().top;
+    }, { capture: true });
+    header.addEventListener("click", () => {
+      if (card.hasAttribute("data-open") === wasOpen) return;
+      const offset = header.getBoundingClientRect().top - previousTop;
+      if (offset === 0) return;
+      window.scrollBy({ top: offset, behavior: "instant" });
+    });
+  }
 }).catch((error) => console.error("html-106:", error));
 </script></head><body id="top">
 <header class="toolbar">
