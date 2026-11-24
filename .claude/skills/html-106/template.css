@@ -129,12 +129,30 @@ pre:has(> .diff-break-layer) { position: relative; }
     ::highlight(selection-match) { background-color: #fff; }
   }
 }
-.selection-match-host { position: relative; }
-.selection-match-sheen {
+.selection-match-host, .card[data-selection-match-inside] { position: relative; }
+.selection-match-sheen, .card[data-selection-match-inside]::after {
   position: absolute;
   pointer-events: none;
   user-select: none;
-  mix-blend-mode: multiply;
+}
+.selection-match-sheen { mix-blend-mode: multiply; }
+.card[data-selection-match-inside]::after {
+  content: "";
+  inset: -1px;
+  border-radius: inherit;
+  border: 2px solid #ffe69c;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (mask-composite: exclude) {
+    .card[data-selection-match-inside]::after {
+      border: 0;
+      padding: 2px;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+    }
+  }
+}
+.selection-match-sheen, .card[data-selection-match-inside]::after {
   background-image:
     radial-gradient(ellipse 18px 5px at 33% 25%, #ffffffdc, transparent),
     radial-gradient(ellipse 24px 7px at 76% 78%, #ffffffdc, transparent),
@@ -144,6 +162,12 @@ pre:has(> .diff-break-layer) { position: relative; }
       #fff 33% 37%, color-mix(in srgb, #f8ccef 90%, #fff) 43%, #fff 49% 50%);
   background-size: 112px 112px;
   animation: selection-match-flow 3.25s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card[data-selection-match-inside]::after { background-image: none; animation: none; }
+}
+@supports not (mask-composite: exclude) {
+  .card[data-selection-match-inside]::after { background-image: none; animation: none; }
 }
 @keyframes selection-match-flow {
   from { background-position: -112px -112px; }

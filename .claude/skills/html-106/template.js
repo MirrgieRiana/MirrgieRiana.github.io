@@ -79,11 +79,31 @@ function setCardOpen(card, open) {
   card.dispatchEvent(new Event("toggle"));
 }
 
+let preserveSelection = (action) => action();
+let pressedSelection;
+const headerPositions = new WeakMap();
+
+function applyCardAction(event, action, header) {
+  if (header) headerPositions.set(event, { header, top: header.getBoundingClientRect().top });
+  const selection = pressedSelection;
+  pressedSelection = undefined;
+  preserveSelection(action, selection);
+}
+
+// Let the old inline scroll handler on previously generated pages run first.
+document.addEventListener("click", (event) => {
+  const anchor = headerPositions.get(event);
+  if (!anchor) return;
+  const offset = anchor.header.getBoundingClientRect().top - anchor.top;
+  if (Math.abs(offset) >= 1) window.scrollBy({ top: offset, behavior: "instant" });
+});
+
 for (const card of cards) {
   const header = card.querySelector(":scope > .front > .card-header");
+  if (!header) continue;
   header.addEventListener("click", (event) => {
     if (event.defaultPrevented || event.target.closest(".subtree-toggle, a")) return;
-    setCardOpen(card, !isCardOpen(card));
+    applyCardAction(event, () => setCardOpen(card, !isCardOpen(card)), header);
   });
 }
 const outline = document.querySelector("nav.contents");
@@ -177,7 +197,7 @@ const subtreeActions = [
   { symbol: "➖", labelKey: "ui.collapseAll", open: false },
 ];
 
-function createCardControls(targetCards, title) {
+function createCardControls(targetCards, title, header) {
   const controls = document.createElement("span");
   controls.className = "subtree-controls";
   const buttons = [];
@@ -195,8 +215,11 @@ function createCardControls(targetCards, title) {
       if (event.defaultPrevented) return;
       event.preventDefault();
 
-      for (const card of targetCards) setCardOpen(card, open);
-      saveOpenCards();
+      const anchor = header && isCardOpen(targetCards[0]) !== open ? header : undefined;
+      applyCardAction(event, () => {
+        for (const card of targetCards) setCardOpen(card, open);
+        saveOpenCards();
+      }, anchor);
     });
 
     controls.append(button);
@@ -220,7 +243,7 @@ function createCardControls(targetCards, title) {
 for (const card of cards) {
   const heading = card.querySelector(":scope > .front > .card-header");
   const subtree = [card, ...card.querySelectorAll(".card")];
-  heading?.append(createCardControls(subtree, heading.textContent.trim()));
+  heading?.append(createCardControls(subtree, heading.textContent.trim(), heading));
 }
 
 function reveal(hash, openTarget) {
@@ -316,12 +339,25 @@ reloadButton.addEventListener("click", () => {
   reloadStatus.textContent = uiText["ui.reloadPreview"];
 });
 
+function snapshotSelection() {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount || selection.isCollapsed) return null;
+
+  const { anchorNode, anchorOffset, focusNode, focusOffset } = selection;
+  return { anchorNode, anchorOffset, focusNode, focusOffset, range: selection.getRangeAt(0).cloneRange() };
+}
+
+function cardControl(target) {
+  if (target.closest("a, .subtree-toggle:disabled")) return null;
+  return target.closest(".subtree-toggle, .card > .front > .card-header");
+}
+
 let press;
 document.addEventListener("pointerdown", (event) => {
   if (!event.isPrimary) return;
-  const heading = event.target.closest(".card > .front > .card-header");
-  press = heading && event.button === 0
-    ? { heading, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false }
+  const control = cardControl(event.target);
+  press = control && event.button === 0
+    ? { control, pointerId: event.pointerId, x: event.clientX, y: event.clientY, moved: false, selection: snapshotSelection() }
     : undefined;
 }, true);
 
@@ -336,8 +372,10 @@ document.addEventListener("pointercancel", (event) => {
   if (press?.pointerId === event.pointerId) press = undefined;
 }, true);
 document.addEventListener("click", (event) => {
-  if (event.detail > 0 && press?.moved && event.target.closest(".card > .front > .card-header") === press.heading) {
-    event.preventDefault();
+  pressedSelection = undefined;
+  if (event.detail > 0 && press && cardControl(event.target) === press.control) {
+    if (press.moved) event.preventDefault();
+    else pressedSelection = press.selection;
   }
   press = undefined;
 }, true);
@@ -573,19 +611,32 @@ function installSelectionHighlights() {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const effects = [];
   const effectHosts = new Set();
+  let highlightedCards = new Set();
+  let retainedSelection;
 
-  function readPageText() {
+  function closedCardForBody(element) {
+    if (!element.matches(".card-body, .card-intro")) return null;
+    const card = element.closest(".card");
+    return card && !isCardOpen(card) ? card : null;
+  }
+
+  function readPageText(includeClosed = true) {
     const chunks = [];
     let current = null;
 
-    function visit(element, host) {
+    function visit(element, host, hiddenBy) {
       const style = getComputedStyle(element);
-      if (style.display === "none" || style.opacity === "0") return;
+      if (style.opacity === "0") return;
+      if (style.display === "none") {
+        const closedCard = includeClosed && closedCardForBody(element);
+        if (!closedCard) return;
+        hiddenBy ??= closedCard;
+      }
 
       if (element.matches("pre, br")) {
         if (element.matches("pre")) {
-          const raw = readText(element);
-          if (raw?.text) chunks.push({ host: element, code: true, ...raw });
+          const raw = readText(element, !hiddenBy);
+          if (raw?.text) chunks.push({ host: element, code: true, hiddenBy, ...raw });
         }
         current = null;
         return;
@@ -594,11 +645,11 @@ function installSelectionHighlights() {
       if (style.display !== "inline" && style.display !== "contents") host = element;
       for (const child of element.childNodes) {
         if (child.nodeType === Node.ELEMENT_NODE) {
-          visit(child, host);
+          visit(child, host, hiddenBy);
         } else if (child.nodeType === Node.TEXT_NODE && child.length &&
                    style.visibility === "visible" && style.userSelect !== "none") {
-          if (current?.host !== host) {
-            current = { host, text: "", parts: [] };
+          if (current?.host !== host || current?.hiddenBy !== hiddenBy) {
+            current = { host, hiddenBy, text: "", parts: [] };
             chunks.push(current);
           }
           current.parts.push({ node: child, start: current.text.length, end: current.text.length + child.length });
@@ -608,31 +659,32 @@ function installSelectionHighlights() {
     }
 
     visit(document.body, document.body);
-    const index = [];
-    let text = "";
-    for (const chunk of chunks) {
-      const { code, host, parts } = chunk;
-      const raw = chunk.text;
+    const visible = { text: "", chunks: [] };
+    const expanded = chunks.some(chunk => chunk.hiddenBy) ? { text: "", chunks: [] } : null;
+    function append(index, chunk) {
+      // Keep code whitespace literal and give each layout-block boundary one separator.
+      if (index.chunks.length) index.text += "\n";
+      const start = index.text.length;
+      index.text += chunk.text;
+      index.chunks.push({ ...chunk, start, end: index.text.length });
+    }
+
+    for (const { code, host, parts, hiddenBy, text: raw } of chunks) {
       const fallback = raw.replace(/[ \t\r\n]+/g, " ").replace(/^ | $/g, "");
       if (!code && !fallback) continue;
-      const rendered = code ? raw : host.innerText ?? fallback;
-      const offsets = code ? null : mapRenderedText(raw, rendered);
+      const rendered = code ? raw : hiddenBy ? fallback : host.innerText ?? fallback;
+      const offsets = code || hiddenBy ? null : mapRenderedText(raw, rendered);
       const value = code || offsets ? rendered : fallback;
       if (!value) continue;
 
-      // Keep code whitespace literal and give each layout-block boundary one separator.
-      if (index.length) text += "\n";
-      index.push({
-        host,
-        parts,
-        text: value,
-        offsets: code ? null : offsets ?? mapRenderedText(raw, value),
-        start: text.length,
-        end: text.length + value.length
-      });
-      text += value;
+      const chunk = {
+        host, parts, hiddenBy, text: value,
+        offsets: code || hiddenBy ? null : offsets ?? mapRenderedText(raw, value)
+      };
+      if (!hiddenBy) append(visible, chunk);
+      if (expanded) append(expanded, chunk);
     }
-    return { text, chunks: index };
+    return { visible, expanded };
   }
 
   function spaceEnd(text, start) {
@@ -761,42 +813,110 @@ function installSelectionHighlights() {
     }
   }
 
+  function selectedQuery(index, range) {
+    if (!range) return { start: null, query: "" };
+    const { start, end } = selectedOffsets(index.chunks, range);
+    return { start, query: start === null ? "" : index.text.slice(start, end) };
+  }
+
+  function visibleEndpoint(node) {
+    if (!node?.isConnected) return false;
+    for (let element = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+         element && element !== document.body; element = element.parentElement) {
+      if (closedCardForBody(element)) return false;
+    }
+    return true;
+  }
+
+  function restorePreservedSelection() {
+    if (!retainedSelection) return;
+    const { anchorNode, anchorOffset, focusNode, focusOffset } = retainedSelection;
+    if (!visibleEndpoint(anchorNode) || !visibleEndpoint(focusNode)) return;
+    retainedSelection = undefined;
+
+    const selection = window.getSelection();
+    if (selection.anchorNode !== anchorNode || selection.anchorOffset !== anchorOffset ||
+        selection.focusNode !== focusNode || selection.focusOffset !== focusOffset) {
+      selection.setBaseAndExtent(anchorNode, anchorOffset, focusNode, focusOffset);
+    }
+  }
+
+  preserveSelection = (action, beforeClick) => {
+    const snapshot = beforeClick ?? snapshotSelection();
+    if (snapshot && !retainedSelection) {
+      const { visible } = readPageText(false);
+      retainedSelection = { ...snapshot, query: selectedQuery(visible, snapshot.range).query };
+    }
+    action();
+    restorePreservedSelection();
+    scheduleSelectionHighlights();
+  };
+
+  function showHighlightedCards(next) {
+    for (const card of highlightedCards) {
+      if (!next.has(card)) card.removeAttribute("data-selection-match-inside");
+    }
+    for (const card of next) {
+      if (!highlightedCards.has(card)) card.setAttribute("data-selection-match-inside", "");
+    }
+    highlightedCards = next;
+  }
+
+  function visitMatches({ text, chunks }, query, visit) {
+    let firstChunk = 0;
+    for (let match = text.indexOf(query); match !== -1; match = text.indexOf(query, match + 1)) {
+      const matchEnd = match + query.length;
+      while (chunks[firstChunk]?.end <= match) firstChunk++;
+      for (let index = firstChunk; index < chunks.length; index++) {
+        const chunk = chunks[index];
+        if (chunk.start >= matchEnd) break;
+        visit(chunk, match, matchEnd);
+      }
+    }
+  }
+
   function updateSelectionHighlights() {
     frame = null;
     clearMatchEffects();
+    restorePreservedSelection();
     const selection = window.getSelection();
-    if (!selection?.rangeCount || selection.isCollapsed) {
+    const beforeClick = press && !press.moved ? press.selection?.range : null;
+    const range = beforeClick ?? (selection?.rangeCount && !selection.isCollapsed ? selection.getRangeAt(0) : null);
+    if (!range && !retainedSelection) {
       registry.delete(name);
+      showHighlightedCards(new Set());
       return;
     }
 
-    const { text, chunks } = readPageText();
-    const { start, end } = selectedOffsets(chunks, selection.getRangeAt(0));
-    const query = start === null ? "" : text.slice(start, end);
+    const { visible, expanded } = readPageText();
+    const { start, query } = retainedSelection
+      ? { start: null, query: retainedSelection.query }
+      : selectedQuery(visible, range);
     if (!query) {
       registry.delete(name);
+      showHighlightedCards(new Set());
       return;
     }
 
     const animate = !reducedMotion.matches && CSS.supports("mix-blend-mode", "multiply");
     const matches = new Highlight();
-    let firstChunk = 0;
-    for (let match = text.indexOf(query); match !== -1; match = text.indexOf(query, match + 1)) {
-      if (match === start) continue;
-      const matchEnd = match + query.length;
-      while (chunks[firstChunk].end <= match) firstChunk++;
-      for (let chunkIndex = firstChunk; chunkIndex < chunks.length; chunkIndex++) {
-        const chunk = chunks[chunkIndex];
-        if (chunk.start >= matchEnd) break;
-        const range = toDOMRange(chunk, Math.max(0, match - chunk.start), Math.min(chunk.text.length, matchEnd - chunk.start));
-        if (!range) continue;
-        matches.add(range);
-        if (animate) drawMatchEffect(chunk.host, chunk, range);
-      }
-    }
-
+    visitMatches(visible, query, (chunk, match, matchEnd) => {
+      if (match === start) return;
+      const range = toDOMRange(chunk, Math.max(0, match - chunk.start), Math.min(chunk.text.length, matchEnd - chunk.start));
+      if (!range) return;
+      matches.add(range);
+      if (animate) drawMatchEffect(chunk.host, chunk, range);
+    });
     if (matches.size) registry.set(name, matches);
     else registry.delete(name);
+
+    const hidden = new Set();
+    if (expanded) {
+      visitMatches(expanded, query, (chunk) => {
+        if (chunk.hiddenBy) hidden.add(chunk.hiddenBy);
+      });
+    }
+    showHighlightedCards(hidden);
   }
 
   let frame = null;
@@ -804,6 +924,19 @@ function installSelectionHighlights() {
     if (frame === null) frame = requestAnimationFrame(updateSelectionHighlights);
   }
 
+  function releasePreservedSelection() {
+    retainedSelection = undefined;
+    scheduleSelectionHighlights();
+  }
+
+  document.addEventListener("pointerdown", (event) => {
+    if (retainedSelection && !cardControl(event.target)) releasePreservedSelection();
+  }, true);
+  document.addEventListener("pointerup", () => {
+    if (retainedSelection && press?.moved && !window.getSelection()?.isCollapsed) releasePreservedSelection();
+  }, true);
+  document.addEventListener("pointercancel", scheduleSelectionHighlights);
+  document.addEventListener("click", scheduleSelectionHighlights);
   document.addEventListener("selectionchange", scheduleSelectionHighlights);
   window.addEventListener("resize", scheduleSelectionHighlights);
   reducedMotion.addEventListener("change", scheduleSelectionHighlights);
