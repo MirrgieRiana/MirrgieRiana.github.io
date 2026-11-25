@@ -175,6 +175,22 @@ pre:has(> .diff-break-layer) { position: relative; }
 }
 
 .page > footer p { margin: 0; }
+#palette-samples summary { cursor: pointer; }
+.palette-sample-color {
+  display: inline-block;
+  padding-inline: .35em;
+  margin-inline-end: .45em;
+  border: 1px solid currentColor;
+  border-radius: .25em;
+}
+.palette-sample-color[data-palette-kind="cards"] {
+  background: oklch(92% var(--card-chroma) var(--card-hue));
+  color: var(--ink);
+}
+.palette-sample-color[data-palette-kind="speakers"] {
+  background: var(--speaker-background);
+  color: var(--speaker-text);
+}
 @media (min-width: 64rem) {
   .page {
     grid-template-columns: minmax(0, 1fr) clamp(15rem, 22vw, 20rem);

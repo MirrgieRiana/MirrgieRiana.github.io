@@ -7,6 +7,10 @@ for (const attribute of ["aria-label", "title"]) {
 }
 
 const palettes = JSON.parse(document.getElementById("color-palettes").textContent);
+function paletteLabel(key, entry) {
+  return entry?.description ? key + " — " + entry.description : "";
+}
+
 function applyCardColor(element, key = element.dataset.category) {
   if (!Object.hasOwn(palettes.cards, key)) return;
   const { hue, chroma } = palettes.cards[key];
@@ -15,13 +19,64 @@ function applyCardColor(element, key = element.dataset.category) {
 }
 applyCardColor(document.documentElement, "default");
 
+function applySpeakerColor(element, { background, text }) {
+  element.style.setProperty("--speaker-background", background);
+  element.style.setProperty("--speaker-text", text);
+}
+
 for (const line of document.querySelectorAll(".line[data-speaker]")) {
   const key = line.dataset.speaker;
   if (!Object.hasOwn(palettes.speakers, key)) continue;
-  const { background, text } = palettes.speakers[key];
-  line.style.setProperty("--speaker-background", background);
-  line.style.setProperty("--speaker-text", text);
+  const entry = palettes.speakers[key];
+  applySpeakerColor(line, entry);
+  const name = line.querySelector(":scope > b");
+  const label = paletteLabel(key, entry);
+  if (name && label) name.title = label;
 }
+
+function cardPaletteKey(card) {
+  for (let current = card; current; current = current.parentElement?.closest(".card")) {
+    if (Object.hasOwn(palettes.cards, current.dataset.category)) return current.dataset.category;
+  }
+  return "default";
+}
+
+function installPaletteSamples() {
+  const footer = document.querySelector(".page > footer");
+  if (!footer) return;
+
+  const list = document.createElement("ul");
+  for (const kind of ["cards", "speakers"]) {
+    for (const [key, entry] of Object.entries(palettes[kind])) {
+      const label = paletteLabel(key, entry);
+      if (!label) continue;
+
+      const item = document.createElement("li");
+      const sample = document.createElement("span");
+      sample.className = "palette-sample-color";
+      sample.dataset.paletteKind = kind;
+      sample.setAttribute("aria-hidden", "true");
+      sample.textContent = "Aa";
+      sample.title = label;
+      if (kind === "cards") applyCardColor(sample, key);
+      else applySpeakerColor(sample, entry);
+
+      const text = document.createElement("span");
+      text.textContent = label;
+      item.append(sample, text);
+      list.append(item);
+    }
+  }
+  if (!list.childElementCount) return;
+
+  const samples = document.createElement("details");
+  samples.id = "palette-samples";
+  const summary = document.createElement("summary");
+  summary.textContent = "色見本";
+  samples.append(summary, list);
+  footer.append(samples);
+}
+installPaletteSamples();
 
 const [heading, ...titleLabels] = document.title.split("｜");
 const pageHeading = heading.trim();
@@ -114,6 +169,9 @@ for (const [index, card] of cards.entries()) {
   applyCardColor(card);
   const cardHeader = card.querySelector(":scope > .front > .card-header");
   if (!cardHeader) continue;
+  const key = cardPaletteKey(card);
+  const labelText = paletteLabel(key, palettes.cards[key]);
+  if (labelText) cardHeader.title = labelText;
   const heading = cardHeader.querySelector(":scope > :is(h2, h3, h4, h5, h6)") ?? cardHeader;
   if (!card.id && !heading.id) {
     let id = "card-" + (index + 1);
