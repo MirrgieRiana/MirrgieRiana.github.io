@@ -29,6 +29,34 @@ a { color: var(--link); text-underline-offset: .18em; }
 .subtree-toggle:disabled { background: #f0f0f0; border-color: var(--frame); cursor: default; filter: grayscale(1); opacity: .65; }
 .toolbar .tools { display: flex; align-items: center; gap: .7rem; }
 .toolbar [role="status"] { color: var(--subtle); font-size: .85rem; }
+#card-palette {
+  position: fixed;
+  inset: auto;
+  inset-block-start: var(--page-top);
+  inset-inline-end: var(--padding);
+  inline-size: max-content;
+  max-inline-size: calc(100% - 2 * var(--padding));
+  max-block-size: calc(100dvh - var(--page-top) - var(--padding));
+  margin: 0;
+  padding: .4rem;
+  overflow: auto;
+  border: 1px solid var(--frame);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--ink);
+  font-size: .85rem;
+}
+#card-palette table { border-spacing: 0 .3rem; }
+#card-palette th, #card-palette td { padding: 0; vertical-align: baseline; }
+#card-palette th { text-align: start; font-weight: inherit; white-space: nowrap; }
+#card-palette td { padding-inline-start: .7rem; overflow-wrap: anywhere; }
+.palette-card-name, .palette-speaker-name { display: inline-block; }
+.palette-card-name {
+  padding: .2rem .5rem;
+  border: 1px solid oklch(82% var(--card-chroma) var(--card-hue));
+  border-radius: calc(var(--radius) - 1px);
+  background: oklch(92% var(--card-chroma) var(--card-hue));
+}
 .page { margin-block: var(--page-top) var(--padding); }
 .masthead, .contents { background: white; border: 1px solid var(--frame); border-radius: var(--radius); }
 .masthead { padding: var(--padding); }
@@ -89,10 +117,10 @@ a { color: var(--link); text-underline-offset: .18em; }
 .source-link { overflow-wrap: anywhere; }
 .notes { display: grid; gap: .65rem; }
 .line { display: grid; grid-template-columns: minmax(5.7rem, max-content) minmax(0, 1fr); align-items: baseline; gap: .7rem; }
-.line b { width: fit-content; font-size: .8rem; font-weight: 700; padding: .05rem .4rem; border-radius: .28rem; white-space: nowrap; }
+.line b, .palette-speaker-name { width: fit-content; font-size: .8rem; font-weight: 700; padding: .05rem .4rem; border-radius: .28rem; white-space: nowrap; }
 .line p { margin: 0; overflow-wrap: anywhere; }
 .line[data-speaker] { color: var(--speaker-text, inherit); }
-.line[data-speaker] b { background: var(--speaker-background, transparent); color: var(--speaker-text, inherit); }
+.line[data-speaker] b, .palette-speaker-name { background: var(--speaker-background, transparent); color: var(--speaker-text, inherit); }
 .evidence { display: grid; gap: .5rem; }
 figure, pre, pre[class*="language-"] { background: #fafafa; }
 figure { min-width: 0; border: 1px solid var(--frame); border-radius: .55rem; margin: 0; }

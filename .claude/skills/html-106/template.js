@@ -7,6 +7,10 @@ for (const attribute of ["aria-label", "title"]) {
 }
 
 const palettes = JSON.parse(document.getElementById("color-palettes").textContent);
+function paletteHint(key, entry) {
+  return [key, entry?.name, entry?.description].filter(Boolean).join("\n");
+}
+
 function applyCardColor(element, key = element.dataset.category) {
   if (!Object.hasOwn(palettes.cards, key)) return;
   const { hue, chroma } = palettes.cards[key];
@@ -15,12 +19,18 @@ function applyCardColor(element, key = element.dataset.category) {
 }
 applyCardColor(document.documentElement, "default");
 
+function applySpeakerColor(element, { background, text }) {
+  element.style.setProperty("--speaker-background", background);
+  element.style.setProperty("--speaker-text", text);
+}
+
 for (const line of document.querySelectorAll(".line[data-speaker]")) {
   const key = line.dataset.speaker;
   if (!Object.hasOwn(palettes.speakers, key)) continue;
-  const { background, text } = palettes.speakers[key];
-  line.style.setProperty("--speaker-background", background);
-  line.style.setProperty("--speaker-text", text);
+  const entry = palettes.speakers[key];
+  applySpeakerColor(line, entry);
+  const name = line.querySelector(":scope > b");
+  if (name && !name.hasAttribute("title")) name.title = paletteHint(key, entry);
 }
 
 const [heading, ...titleLabels] = document.title.split("｜");
@@ -101,6 +111,10 @@ document.addEventListener("click", (event) => {
 for (const card of cards) {
   const header = card.querySelector(":scope > .front > .card-header");
   if (!header) continue;
+  if (card.dataset.category && !header.hasAttribute("title")) {
+    const key = card.dataset.category;
+    header.title = paletteHint(key, palettes.cards[key]);
+  }
   header.addEventListener("click", (event) => {
     if (event.defaultPrevented || event.target.closest(".subtree-toggle, a")) return;
     applyCardAction(event, () => setCardOpen(card, !isCardOpen(card)), header);
@@ -329,6 +343,52 @@ scheduleOutlineUpdate();
 
 const reloadButton = document.querySelector("#reload-page");
 reloadButton.before(createCardControls(cards, uiText["ui.allCards"]));
+
+function appendPaletteRow(body, name, description) {
+  const row = body.insertRow();
+  const heading = document.createElement("th");
+  heading.scope = "row";
+  heading.append(name);
+  row.append(heading);
+  row.insertCell().textContent = description ?? "";
+}
+
+const cardPaletteLabel = uiText["ui.cardPalette"] ?? "色見本";
+const cardPalette = document.createElement("div");
+cardPalette.id = "card-palette";
+cardPalette.setAttribute("popover", "auto");
+const paletteTable = document.createElement("table");
+paletteTable.setAttribute("aria-label", cardPaletteLabel);
+const paletteBody = paletteTable.createTBody();
+for (const [key, entry] of Object.entries(palettes.cards)) {
+  const name = document.createElement("span");
+  name.className = "palette-card-name";
+  name.textContent = entry.name ?? key;
+  name.title = paletteHint(key, entry);
+  applyCardColor(name, key);
+  appendPaletteRow(paletteBody, name, entry.description);
+}
+for (const [key, entry] of Object.entries(palettes.speakers ?? {})) {
+  const name = document.createElement("b");
+  name.className = "palette-speaker-name";
+  name.textContent = entry.name ?? key;
+  name.title = paletteHint(key, entry);
+  applySpeakerColor(name, entry);
+  appendPaletteRow(paletteBody, name, entry.description);
+}
+cardPalette.append(paletteTable);
+
+const cardPaletteButton = document.getElementById("card-palette-button") ?? document.createElement("button");
+cardPaletteButton.id = "card-palette-button";
+cardPaletteButton.type = "button";
+cardPaletteButton.textContent = "🎨";
+cardPaletteButton.title = cardPaletteLabel;
+cardPaletteButton.setAttribute("aria-label", cardPaletteLabel);
+cardPaletteButton.setAttribute("popovertarget", cardPalette.id);
+cardPaletteButton.hidden = !paletteBody.rows.length;
+document.getElementById(cardPalette.id)?.remove();
+reloadButton.after(cardPaletteButton, cardPalette);
+
 const reloadStatus = document.querySelector("#reload-status");
 reloadButton.addEventListener("click", () => {
   saveOpenCards();

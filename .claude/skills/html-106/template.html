@@ -10,6 +10,7 @@
 {
   "ui.outline": "目次",
   "ui.reload": "再読み込み",
+  "ui.cardPalette": "色見本",
   "ui.expandAll": "すべて開く",
   "ui.collapseAll": "すべて閉じる",
   "ui.allCards": "ページ内の全カード",
@@ -20,15 +21,15 @@
 <script type="application/json" id="color-palettes">
 {
   "cards": {
-    "default": { "hue": 0, "chroma": 0 },
-    "dough": { "hue": 158, "chroma": 0.036 },
-    "ingredients": { "hue": 82, "chroma": 0.036 },
-    "baking": { "hue": 310, "chroma": 0.036 },
-    "storage": { "hue": 250, "chroma": 0.036 }
+    "default": { "name": "基本", "hue": 0, "chroma": 0, "description": "ページ全体の基本色なのだ。" },
+    "dough": { "name": "生地作り", "hue": 158, "chroma": 0.036, "description": "生地を作って型で抜く手順なのだ。" },
+    "ingredients": { "name": "材料", "hue": 82, "chroma": 0.036, "description": "材料と分量なのだ。" },
+    "baking": { "name": "焼き上がり", "hue": 310, "chroma": 0.036, "description": "焼き上がりの見分け方なのだ。" },
+    "storage": { "name": "保存とアレンジ", "hue": 250, "chroma": 0.036, "description": "保存や持ち運び、風味のアレンジなのだ。" }
   },
   "speakers": {
-    "tip": { "background": "#d7f0e4", "text": "#175240" },
-    "caution": { "background": "#ffedc5", "text": "#674600" }
+    "tip": { "name": "コツ", "background": "#d7f0e4", "text": "#175240", "description": "作業の目印や、仕上がりをよくする工夫なのだ。" },
+    "caution": { "name": "注意", "background": "#ffedc5", "text": "#674600", "description": "失敗しやすい箇所と、その避け方なのだ。" }
   }
 }
 </script>
