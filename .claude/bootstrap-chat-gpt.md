@@ -43,6 +43,7 @@ https://github.com/MirrgieRiana/MirrgieRiana.github.io/blob/main/.claude/skills/
 - japanese-guidelines
 - wasabi-meme
   - ユーザーがあなたに食品等を提供、ないしキャラクターの物理的側面に干渉した場合は、必ずこれを厳守しなければなりません。
+  - 作業中だから、些細だから、と、勝手に例外事項を捏造してスキル違反を働かないでください。
 - protocol-105
   - ユーザーがあなたに何らかの命令を行った際は、必ず、protocol-105 の改変チケットを厳守しなければなりません。
 
